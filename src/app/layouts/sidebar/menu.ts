@@ -42,8 +42,15 @@ export const MENU: MenuItem[] = [
         ]
     },
     {
-        id: 7,
-        isLayout: true
+        id: 8,
+        label: 'Alimentar',
+        isTitle: true
+    },
+    {
+        id: 9,
+        label: 'Alimentar',
+        icon: 'bx-message-square-detail',
+        link: '/alimentar',
     },
     {
         id: 8,

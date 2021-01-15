@@ -22,6 +22,10 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+ 
+const config: SocketIoConfig = { url: environment.socketUrl, options: {} };
+
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -51,7 +55,8 @@ export function createTranslateLoader(http: HttpClient): any {
     NgbNavModule,
     NgbTooltipModule,
     SharedModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    SocketIoModule.forRoot(config)
   ],
   bootstrap: [AppComponent],
   providers: [

@@ -66,6 +66,14 @@
                     your
                     password?</a>
                 </div>
+
+                <div class="mt-4 text-center">
+                  Server status:
+                  <span *ngIf="ws.socketStatus" class="text-success">Online</span>
+                  <span *ngIf="!ws.socketStatus" class="text-danger">Offline</span>
+                </div>
+
+
               </form>
             </div>
 

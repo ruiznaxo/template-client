@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../../core/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
 
 @Component({
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   // tslint:disable-next-line: max-line-length
   constructor(private formBuilder: FormBuilder, 
     private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
-    private translateService: TranslateService
+    private translateService: TranslateService, public ws: WebsocketService
   ) { }
 
   ngOnInit() {
