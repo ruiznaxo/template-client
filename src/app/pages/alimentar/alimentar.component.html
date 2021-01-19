@@ -6,12 +6,81 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Transactions</h4>
+                    <h4 class="card-title mb-4">Linea</h4>
 
                 </div>
             </div>
         </div>
+
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Jaulas</h4>
+                    <ul ngbNav #nav="ngbNav" class="nav-pills bg-light rounded" animation="true">
+                        <li *ngFor="let jaula of jaulas; index as i" ngbDropdown [ngbNavItem]="i">
+
+                            <!-- <a ngbNavLink>{{jaula.id}}
+                                <span class="close position-relative pl-2 font-weight-light">x</span>
+                            </a> -->
+
+                            <div class="btn-group mr-1 mt-2" ngbDropdown>
+                                <button (click)="nav.select(i)" type="button"
+                                    [class]="jaula.claseEstado">{{jaula.nombre}}</button>
+                                <button type="button" [class]="jaula.claseEstado"
+                                    class="dropdown-toggle dropdown-toggle-split" ngbDropdownToggle>
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-menu" ngbDropdownMenu>
+                                    <button class="dropdown-item"
+                                        (click)="scrollModal(scrollDataModal)">Parametros</button>
+                                    <div class="dropdown-divider"></div>
+
+                                    <a *ngIf="jaula.estado != 4; else desactivadoTemplate" class="dropdown-item"
+                                        (click)="desactivar(jaula.id)">Desactivar</a>
+                                    <ng-template #desactivadoTemplate><a class="dropdown-item"
+                                            (click)="activar(jaula.id)">Activar</a>
+                                    </ng-template>
+                                </div>
+                            </div>
+                            <ng-template ngbNavContent>
+                                <p>Selectora: {{jaula.nombre}}</p>
+                            </ng-template>
+                        </li>
+
+                    </ul>
+
+                    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+
     </div>
 
 
 </div>
+
+<!-- Scrollable Modal -->
+<ng-template #scrollDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Parametros</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas
+            eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
+            laoreet rutrum faucibus dolor auctor.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Cerrar</button>
+        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+</ng-template>
