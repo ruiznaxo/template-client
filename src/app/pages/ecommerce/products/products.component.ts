@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { productModel, productList } from '../product.model';
-import { Options } from 'ng5-slider';
+import { Options } from '@angular-slider/ngx-slider';
 import { HttpClient } from '@angular/common/http';
 
 @Component({

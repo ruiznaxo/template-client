@@ -2,30 +2,58 @@
 
     <app-page-title title="Alimentar" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
-    <div class="row">
-        <div class="col-xl-4">
+    <div class="row" *ngFor="let linea of lineas">
+        <div class="col-xl-3">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Linea</h4>
+                    <div class="row">
+
+                        <div class="col-4">
+                            <h4 class="card-title mb-4">{{linea.NOMBRE}}</h4>
+
+                        </div>
+
+                        <div class="button-items">
+                            <button type="button" class="btn btn-success">
+                                <i class="bx bx-play-circle bx-xs align-middle"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-warning">
+                                <i class="bx bx-pause-circle bx-xs align-middle"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger">
+                                <i class="bx bx-stop-circle bx-xs align-middle"></i>
+                            </button>
+                        </div>
+
+                        <!-- <ng-container *ngIf="expression;else templateName"></ng-container>
+
+                        <ng-template templateName></ng-template> -->
+
+                        Presión:: {{ linea.PRESION }}
+                        Alarma: {{ linea.ALARMA }}
+                        hz soplador: Pendiente
+
+
+
+
+                    </div>
+
 
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-8">
+        <div class="col-xl-5">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Jaulas</h4>
-                    <ul ngbNav #nav="ngbNav" class="nav-pills bg-light rounded" animation="true">
-                        <li *ngFor="let jaula of jaulas; index as i" ngbDropdown [ngbNavItem]="i">
-
-                            <!-- <a ngbNavLink>{{jaula.id}}
-                                <span class="close position-relative pl-2 font-weight-light">x</span>
-                            </a> -->
+                    <ul ngbNav #nav="ngbNav" class="nav-pills bg-light rounded">
+                        <li *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i" ngbDropdown
+                            [ngbNavItem]="i">
 
                             <div class="btn-group mr-1 mt-2" ngbDropdown>
                                 <button (click)="nav.select(i)" type="button"
-                                    [class]="jaula.claseEstado">{{jaula.nombre}}</button>
+                                    [class]="jaula.claseEstado">{{jaula.NOMBRE}}</button>
                                 <button type="button" [class]="jaula.claseEstado"
                                     class="dropdown-toggle dropdown-toggle-split" ngbDropdownToggle>
                                     <i class="mdi mdi-chevron-down"></i>
@@ -43,8 +71,33 @@
                                 </div>
                             </div>
                             <ng-template ngbNavContent>
-                                <p>Selectora: {{jaula.nombre}}</p>
+                                <p>Selectora: {{jaula.NOMBRE}}</p>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="p-3">
+                                            <h5 class="font-size-14 mb-3 mt-0">TASA</h5>
+                                            <ngx-slider [(value)]="jaula.TASA" [options]="tasaOptions"></ngx-slider>
+                                        </div>
+                                    </div>
+
+                                    <ng-container
+                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyLinea : linea.ID">
+                                        VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
+                                        TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
+                                        OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
+                                        TOTALENTREGADO: {{alimentacion.TOTALENTREGADO}}
+                                        OBJETIVOTOTAL: {{alimentacion.OBJETIVOTOTAL}}
+                                        HZDOSER: {{alimentacion.HZDOSER}}
+                                        VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
+                                        FINALIZADA: {{alimentacion.FINALIZADA}}
+                                        ESTADOALIMENTACIONS: {{alimentacion.ESTADOALIMENTACIONS}}
+                                    </ng-container>
+                                </div>
+
+
                             </ng-template>
+
                         </li>
 
                     </ul>

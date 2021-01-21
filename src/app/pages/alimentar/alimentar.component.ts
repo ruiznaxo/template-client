@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlimentarService } from './alimentar.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import { Jaula } from './jaula';
+import { Jaula, Linea, Alimentacion, Dosificador } from './alimentar';
 import { forkJoin } from 'rxjs';
 import { NgbModal, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { Options } from '@angular-slider/ngx-slider';
 
 @Component({
   selector: 'app-alimentar',
@@ -16,16 +17,20 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   breadCrumbItems: Array<{}>;
 
-  jaulas: Jaula[] = [
-    {
-    id: 1,
-    nombre: "1111"
-    },
-    {
-    id: 2,
-    nombre: "2222"
-    },
-  ]
+  jaulas: Jaula[];
+
+  lineas: Linea[];
+
+  alimentaciones: Alimentacion[];
+
+  dosificadores: Dosificador[];
+
+  defaultVal = 34;
+  tasaOptions: Options = {
+    floor: 1,
+    ceil: 100
+  };
+  
 
   constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal) { }
 
@@ -33,21 +38,26 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
     let listaPeticionesHttp = [
-      this.alimentarService.getJaulas(), 
       this.alimentarService.getLineas(), 
+      this.alimentarService.getJaulas(), 
       this.alimentarService.getProgramaciones(),
-      this.alimentarService.getAlimentaciones()
+      this.alimentarService.getAlimentaciones(),
+      this.alimentarService.getDosificadores()
     ]
     
 
     forkJoin(listaPeticionesHttp).subscribe(res => {
-      res[0].map( x => x.estado = 3)
-      res[0].map( x => x.claseEstado = this.setClaseEstado(x.estado))
-      this.jaulas = res[0];
-      console.log(this.jaulas);  
+      console.log(res[0]);
+      
+      this.lineas = res[0];
+      res[1].map( x => x.estado = 0)
+      res[1].map( x => x.claseEstado = this.setClaseEstado(x.estado))
+      this.jaulas = res[1];
+      this.alimentaciones = res[3];
+      this.dosificadores = res[4]
+      
     });
 
-    console.log(this.jaulas);
     
 
     this.wsService.listen("real-time").subscribe((data) => {
@@ -66,17 +76,17 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
   desactivar(idJaula: number){
-    let jaula = this.jaulas.find( x=> x.id === idJaula)
+    let jaula = this.jaulas.find( x=> x.ID === idJaula)
     jaula.estado = 4;
-    this.jaulas.find( x=> x.id === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
+    this.jaulas.find( x=> x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
 
     //peticion patch
   }
 
   activar(idJaula: number){
-    let jaula = this.jaulas.find( x=> x.id === idJaula)
+    let jaula = this.jaulas.find( x=> x.ID === idJaula)
     jaula.estado = 0;
-    this.jaulas.find( x=> x.id === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
+    this.jaulas.find( x=> x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
 
     //peticion patch
   }
@@ -96,6 +106,14 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       default:
         return "btn btn-primary";
     }
+  }
+
+
+  getTasaMax(idDoser: number): number{
+    let tasamax = this.dosificadores.find( doser => doser.ID === idDoser).TASAMAX
+    console.log(tasamax);
+    
+    return this.dosificadores.find( doser => doser.ID === idDoser).TASAMAX
   }
 
 

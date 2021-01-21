@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
-import { Jaula } from './jaula';
+import { Jaula } from './alimentar';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,10 @@ export class AlimentarService {
 
   getAlimentaciones(): Observable<any>{
     return this.http.get(this.jaulaUrl + "alimentacion")
+  }
+
+  getDosificadores(): Observable<any>{
+    return this.http.get(this.jaulaUrl + "dosificador")
   }
 
 }

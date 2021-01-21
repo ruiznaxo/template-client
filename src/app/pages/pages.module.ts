@@ -43,6 +43,9 @@ import interactionPlugin from '@fullcalendar/interaction'; // a plugin
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import { FilemanagerComponent } from './filemanager/filemanager.component';
 import { AlimentarComponent } from './alimentar/alimentar.component';
+import { JaulaFilterbyLineaPipe } from './alimentar/jaula-filterby-linea.pipe';
+import { AlimentacionFilterbyLineaPipe } from './alimentar/alimentacion-filterby-linea.pipe';
+import { NgxSliderModule } from "@angular-slider/ngx-slider";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -56,7 +59,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  declarations: [CalendarComponent, ChatComponent, FilemanagerComponent, AlimentarComponent],
+  declarations: [CalendarComponent, ChatComponent, FilemanagerComponent, AlimentarComponent, JaulaFilterbyLineaPipe, AlimentacionFilterbyLineaPipe],
   imports: [
     CommonModule,
     FormsModule,
@@ -88,7 +91,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     NgbNavModule,
     NgbTooltipModule,
     PerfectScrollbarModule,
-    NgbModule
+    NgbModule,
+    NgxSliderModule
   ],
   providers: [
     {

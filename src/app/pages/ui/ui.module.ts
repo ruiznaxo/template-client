@@ -8,7 +8,7 @@ import {
   NgbTooltipModule, NgbPopoverModule, NgbPaginationModule, NgbNavModule, NgbAccordionModule,
   NgbCollapseModule
 } from '@ng-bootstrap/ng-bootstrap';
-import { Ng5SliderModule } from 'ng5-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { UiRoutingModule } from './ui-routing.module';
@@ -38,7 +38,7 @@ import { ImagecropperComponent } from './imagecropper/imagecropper.component';
     UiRoutingModule,
     UIModule,
     FormsModule,
-    Ng5SliderModule,
+    NgxSliderModule,
     NgbAlertModule,
     NgbCarouselModule,
     NgbDropdownModule,

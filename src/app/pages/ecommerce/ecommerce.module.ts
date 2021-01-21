@@ -6,7 +6,7 @@ import { EcommerceRoutingModule } from './ecommerce-routing.module';
 import { UIModule } from '../../shared/ui/ui.module';
 import { WidgetModule } from '../../shared/widget/widget.module';
 
-import { Ng5SliderModule } from 'ng5-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgbNavModule, NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -43,7 +43,7 @@ const config: DropzoneConfigInterface = {
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
+    NgxSliderModule,
     NgSelectModule,
     NgbPaginationModule
   ],

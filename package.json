@@ -51,7 +51,7 @@
     "ng-click-outside": "^7.0.1",
     "ng2-charts": "^2.4.2",
     "ng2-search-filter": "^0.5.1",
-    "ng5-slider": "^1.2.6",
+    "@angular-slider/ngx-slider": "^2.0.0",
     "ngx-chartist": "^1.0.3",
     "ngx-color-picker": "^10.1.0",
     "ngx-cookie-service": "^10.1.1",
