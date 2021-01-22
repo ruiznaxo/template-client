@@ -13,7 +13,7 @@ export interface Jaula {
     TIEMPOSOPLADO?: number;
     HZSOPLADOR?: number;
     HABILITADA?: number;
-    IDDOCIFICADOR?: number;
+    IDDOSIFICADOR?: number;
     IDPROGRAMACION?: number;
     IDSELECTORA?: number;
     IDLINEA?: number;

@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlimentarService } from './alimentar.service';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Jaula, Linea, Alimentacion, Dosificador } from './alimentar';
-import { forkJoin } from 'rxjs';
-import { NgbModal, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { forkJoin, Subject } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Options } from '@angular-slider/ngx-slider';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-alimentar',
@@ -14,6 +15,14 @@ import { Options } from '@angular-slider/ngx-slider';
 export class AlimentarComponent implements OnInit, OnDestroy {
 
   active = 1;
+
+  tasaSelect: { id: number, formula: string }[] = [
+    { id: 1, formula: "Kg / min" },
+    { id: 2, formula: "PPM / min" },
+    { id: 3, formula: "Tonelada" },
+  ]
+
+  selectedFormula: number = 1;
 
   breadCrumbItems: Array<{}>;
 
@@ -25,73 +34,87 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   dosificadores: Dosificador[];
 
-  defaultVal = 34;
-  tasaOptions: Options = {
-    floor: 1,
-    ceil: 100
-  };
-  
+  tasaOptions: { idJaula: number, options: Options }[] = [];
 
-  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal) { }
+  private unsubscribe = new Subject<void>();
+
+
+  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal) {
+
+  }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
+    this.wsService.listen("real-time").subscribe((data) => {
+      console.log(data);
+    })
+
+  }
+
+  loadData() {
     let listaPeticionesHttp = [
-      this.alimentarService.getLineas(), 
-      this.alimentarService.getJaulas(), 
+      this.alimentarService.getLineas(),
+      this.alimentarService.getJaulas(),
       this.alimentarService.getProgramaciones(),
       this.alimentarService.getAlimentaciones(),
       this.alimentarService.getDosificadores()
     ]
-    
 
-    forkJoin(listaPeticionesHttp).subscribe(res => {
-      console.log(res[0]);
-      
-      this.lineas = res[0];
-      res[1].map( x => x.estado = 0)
-      res[1].map( x => x.claseEstado = this.setClaseEstado(x.estado))
-      this.jaulas = res[1];
-      this.alimentaciones = res[3];
-      this.dosificadores = res[4]
-      
-    });
 
-    
+    forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe)).subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores]) => {
+        console.log(lineas);
+        
+        this.lineas = lineas;
+        jaulas.map(x => x.estado = 0)
+        jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
+        this.jaulas = jaulas
+        this.alimentaciones = alimentaciones;
+        this.dosificadores = dosificadores
 
-    this.wsService.listen("real-time").subscribe((data) => {
-        console.log(data);        
-    })    
+        if (this.jaulas && this.dosificadores) {
+          this.setOptions(this.jaulas, this.dosificadores)
+        }
+
+      });
 
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     //cancelar suscripciones
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
-  
+
+  cambioFormula() {
+    if (this.jaulas && this.dosificadores) {
+
+      this.setOptions(this.jaulas, this.dosificadores);
+    }
+  }
+
 
   scrollModal(scrollDataModal: any) {
     this.modalService.open(scrollDataModal, { scrollable: true, centered: true });
   }
 
-  desactivar(idJaula: number){
-    let jaula = this.jaulas.find( x=> x.ID === idJaula)
+  desactivar(idJaula: number) {
+    let jaula = this.jaulas.find(x => x.ID === idJaula)
     jaula.estado = 4;
-    this.jaulas.find( x=> x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
+    this.jaulas.find(x => x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
 
     //peticion patch
   }
 
-  activar(idJaula: number){
-    let jaula = this.jaulas.find( x=> x.ID === idJaula)
+  activar(idJaula: number) {
+    let jaula = this.jaulas.find(x => x.ID === idJaula)
     jaula.estado = 0;
-    this.jaulas.find( x=> x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
+    this.jaulas.find(x => x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
 
     //peticion patch
   }
 
-  setClaseEstado(estado: number): string{
+  setClaseEstado(estado: number): string {
     switch (estado) {
       case 0:
         return "btn btn-primary"
@@ -100,20 +123,69 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       case 2:
         return "btn btn-info"
       case 3:
-        return "btn btn-danger"    
+        return "btn btn-danger"
       case 4:
-        return "btn btn-secondary"    
+        return "btn btn-secondary"
       default:
         return "btn btn-primary";
     }
   }
 
 
-  getTasaMax(idDoser: number): number{
-    let tasamax = this.dosificadores.find( doser => doser.ID === idDoser).TASAMAX
-    console.log(tasamax);
-    
-    return this.dosificadores.find( doser => doser.ID === idDoser).TASAMAX
+  getTasaVisible(idJaula: number): number {
+
+    switch (this.selectedFormula) {
+      case 1:
+        //Kg / min
+        return Math.round(this.jaulas.find(x => x.ID === idJaula).TASA * 0.06)
+      case 2:
+        //Get Pellet kilo de silo
+        return Math.round(this.jaulas.find(x => x.ID === idJaula).TASA * 0.05)
+      case 3:
+        //Tonelada
+        return Math.round(this.jaulas.find(x => x.ID === idJaula).TASA * 0.04)
+      default:
+        break;
+    }
+  }
+
+  setOptions(jaulas: Jaula[], dosificadores: Dosificador[]) {
+    if (jaulas && dosificadores) {
+      jaulas.forEach(jaula => {
+        let tasamax;
+
+        switch (this.selectedFormula) {
+          case 1:
+            //Kg / min
+            tasamax = Math.round(dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX * 0.06)
+            break;
+          case 2:
+            //Get Pellet kilo de silo
+            tasamax = Math.round(dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX)
+            break;
+          case 3:
+            //Tonelada
+            tasamax = Math.round(dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX)
+            break;
+          default:
+            break;
+        }
+
+        console.log(tasamax);
+
+
+        this.tasaOptions.push({
+          idJaula: jaula.ID, options: {
+            floor: 1,
+            ceil: tasamax
+          }
+        });
+      });
+    }
+  }
+
+  getOptions(idJaula: number) {
+    return this.tasaOptions.find(x => x.idJaula === idJaula).options;
   }
 
 

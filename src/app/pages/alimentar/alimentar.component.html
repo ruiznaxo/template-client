@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <div class="row">
 
-                        <div class="col-4">
+                        <div class="col-3">
                             <h4 class="card-title mb-4">{{linea.NOMBRE}}</h4>
 
                         </div>
@@ -46,7 +46,7 @@
         <div class="col-xl-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Jaulas</h4>
+                    <h4 class="card-title mb-5">Jaulas</h4>
                     <ul ngbNav #nav="ngbNav" class="nav-pills bg-light rounded">
                         <li *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i" ngbDropdown
                             [ngbNavItem]="i">
@@ -74,11 +74,29 @@
                                 <p>Selectora: {{jaula.NOMBRE}}</p>
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" *ngIf="tasaOptions">
                                         <div class="p-3">
-                                            <h5 class="font-size-14 mb-3 mt-0">TASA</h5>
-                                            <ngx-slider [(value)]="jaula.TASA" [options]="tasaOptions"></ngx-slider>
+                                            <div class="row">
+                                                <h5 class="font-size-28 mb-3 mt-0 col-6">TASA </h5>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="formrow-inputState">State</label>
+                                                        <select [(ngModel)]="selectedFormula"
+                                                            (ngModelChange)="cambioFormula()" id="formrow-inputState"
+                                                            class="form-control">
+                                                            <option *ngFor="let item of tasaSelect" [value]="item.id">
+                                                                {{ item.formula }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <ngx-slider [value]="getTasaVisible(jaula.ID)" [options]="getOptions(jaula.ID)">
+                                            </ngx-slider>
                                         </div>
+
+
+
                                     </div>
 
                                     <ng-container
