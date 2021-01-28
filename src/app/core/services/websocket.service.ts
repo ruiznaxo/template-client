@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -32,7 +33,7 @@ export class WebsocketService {
 
     }
 
-    listen( evento: string ) {
+    listen( evento: string ): Observable<any> {
       return this.socket.fromEvent( evento );
     }
 

@@ -2,7 +2,8 @@
 
     <app-page-title title="Alimentar" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
-    <div class="row" *ngFor="let linea of lineas">
+    <div class="row" *ngFor="let linea of lineas;">
+        <!-- Inicio Linea -->
         <div class="col-xl-3">
             <div class="card">
                 <div class="card-body">
@@ -24,25 +25,16 @@
                                 <i class="bx bx-stop-circle bx-xs align-middle"></i>
                             </button>
                         </div>
-
-                        <!-- <ng-container *ngIf="expression;else templateName"></ng-container>
-
-                        <ng-template templateName></ng-template> -->
-
                         Presión:: {{ linea.PRESION }}
                         Alarma: {{ linea.ALARMA }}
                         hz soplador: Pendiente
-
-
-
-
                     </div>
-
-
                 </div>
             </div>
         </div>
+        <!-- Fin Linea -->
 
+        <!-- Inicio Jaulas Por Linea -->
         <div class="col-xl-5">
             <div class="card">
                 <div class="card-body">
@@ -77,21 +69,22 @@
                                     <div class="col-md-6" *ngIf="tasaOptions">
                                         <div class="p-3">
                                             <div class="row">
-                                                <h5 class="font-size-28 mb-3 mt-0 col-6">TASA </h5>
-                                                <div class="col-6">
+                                                <h5 class="font-size-28 pt-2 col-4">TASA </h5>
+                                                <div class="col-8">
                                                     <div class="form-group">
-                                                        <label for="formrow-inputState">State</label>
                                                         <select [(ngModel)]="selectedFormula"
                                                             (ngModelChange)="cambioFormula()" id="formrow-inputState"
                                                             class="form-control">
-                                                            <option *ngFor="let item of tasaSelect" [value]="item.id">
+                                                            <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
                                                                 {{ item.formula }}
                                                             </option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <ngx-slider [value]="getTasaVisible(jaula.ID)" [options]="getOptions(jaula.ID)">
+                                            <ngx-slider [value]="getTasaVisible(jaula.ID)"
+                                                [options]="getOptions(jaula.ID)"
+                                                (userChangeEnd)="setTasa($event, jaula.ID)">
                                             </ngx-slider>
                                         </div>
 
@@ -100,7 +93,7 @@
                                     </div>
 
                                     <ng-container
-                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyLinea : linea.ID">
+                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyJaula : jaula.ID">
                                         VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
                                         TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
                                         OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
@@ -125,7 +118,7 @@
                 </div>
             </div>
         </div>
-
+        <!-- Fin Jaulas Por Linea -->
 
     </div>
 

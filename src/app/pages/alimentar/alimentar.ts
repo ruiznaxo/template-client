@@ -77,5 +77,15 @@ export interface Dosificador {
     IDALARMA: number;
 }
 
+export interface Silo {
+    ID: number;
+    NOMBRE: string;
+    CAPACIDAD: number;
+    MEDICADO: number;
+    SALDO: number;
+    PELLETKILO: number;
+    ALIMENTO: string;
+}
+
 
 

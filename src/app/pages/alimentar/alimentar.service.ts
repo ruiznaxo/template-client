@@ -36,4 +36,12 @@ export class AlimentarService {
     return this.http.get(this.jaulaUrl + "dosificador")
   }
 
+  getSilos(): Observable<any>{
+    return this.http.get(this.jaulaUrl + "silo")
+  }
+
+  updateTasaJaula(idJaula: number, valorTasa: number){
+    this.http.patch(this.jaulaUrl + "jaula/" + idJaula, {tasa: valorTasa})
+  }
+
 }
