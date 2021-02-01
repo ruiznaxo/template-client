@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Alimentacion } from './alimentar';
+import { Alimentacion } from 'src/app/pages/alimentar/alimentar';
 
 @Pipe({
   name: 'alimentacionFilterbyJaula',

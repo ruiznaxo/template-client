@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlimentarService } from './alimentar.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import { Jaula, Linea, Alimentacion, Dosificador, Silo } from './alimentar';
+import { Jaula, Linea, Alimentacion, Dosificador, Silo, Alarma } from './alimentar';
 import { forkJoin, Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Options } from '@angular-slider/ngx-slider';
@@ -29,6 +29,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   jaulas: Jaula[];
 
   lineas: Linea[];
+
+  alarmas: Alarma[];
 
   alimentaciones: Alimentacion[];
 
@@ -77,6 +79,9 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.wsService.listen("all-alimentaciones").subscribe((data: Alimentacion[]) => {      
       this.checkChanges(this.alimentaciones, data)
     })
+    this.wsService.listen("all-alarmas").subscribe((data: Alarma[]) => {      
+      this.checkChanges(this.alarmas, data)
+    })
   }
 
 
@@ -97,20 +102,22 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       this.alimentarService.getAlimentaciones(),
       this.alimentarService.getDosificadores(),
       this.alimentarService.getSilos(),
+      this.alimentarService.getAlarmas(),
     ]
 
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-    .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos]) => {
+    .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas]) => {
       //console.log(lineas);
 
       this.lineas = lineas;
-      jaulas.map(x => x.estado = 0)
-      jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
+      // jaulas.map(x => x.estado = 0)
+      // jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
       this.jaulas = jaulas
       this.alimentaciones = alimentaciones;
       this.dosificadores = dosificadores;
       this.silos = silos;
+      this.alarmas = alarmas;
 
       if (this.jaulas && this.dosificadores) {
         this.setOptions(this.jaulas, this.dosificadores)

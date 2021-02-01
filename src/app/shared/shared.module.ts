@@ -6,9 +6,12 @@ import { UIModule } from './ui/ui.module';
 import { WidgetModule } from './widget/widget.module';
 
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
+import { AlimentacionFilterbyJaulaPipe } from './pipes/alimentacion-filterby-jaula.pipe';
+import { JaulaFilterbyLineaPipe } from './pipes/jaula-filterby-linea.pipe';
+import { AlarmaFilterbyLineaPipe } from './pipes/alarmas-filterby-linea.pipe';
 
 @NgModule({
-  declarations: [],
+  declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe],
   imports: [
     CommonModule,
     UIModule,
@@ -16,7 +19,10 @@ import { NgxSliderModule } from "@angular-slider/ngx-slider";
     NgxSliderModule
   ],
   exports:[
-    NgxSliderModule
+    NgxSliderModule,
+    AlimentacionFilterbyJaulaPipe, 
+    JaulaFilterbyLineaPipe,
+    AlarmaFilterbyLineaPipe
   ]
 })
 

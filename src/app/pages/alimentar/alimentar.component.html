@@ -28,6 +28,21 @@
                         Presión:: {{ linea.PRESION }}
                         Alarma: {{ linea.ALARMA }}
                         hz soplador: Pendiente
+
+                        <div class="mt-4 text-center">
+                            Alarmas:
+                            <span *ngIf="!linea.ALARMA" class="text-success">Sin Alarmas</span>
+                            <span *ngIf="linea.ALARMA" class="text-danger">Con Alarmas</span>
+                        </div>
+
+                        <div class="mt-4 text-center" *ngIf="linea.ALARMA">
+                            Problemas con: 
+                            <ul>
+                                <li *ngFor="let alarma of alarmas | alarmaFilterbyLinea:linea.ID ">{{ alarma.ID }}</li>
+                            </ul>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -97,12 +112,13 @@
                                         VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
                                         TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
                                         OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
+                                        ENTREGADOVISITA: {{alimentacion.ENTREGADOVISITA}}
                                         TOTALENTREGADO: {{alimentacion.TOTALENTREGADO}}
                                         OBJETIVOTOTAL: {{alimentacion.OBJETIVOTOTAL}}
                                         HZDOSER: {{alimentacion.HZDOSER}}
                                         VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
                                         FINALIZADA: {{alimentacion.FINALIZADA}}
-                                        ESTADOALIMENTACIONS: {{alimentacion.ESTADOALIMENTACIONS}}
+                                        ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
                                     </ng-container>
                                 </div>
 

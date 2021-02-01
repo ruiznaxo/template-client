@@ -55,13 +55,13 @@ export interface Alimentacion {
     TOTALVISITAS?: number;
     IDJAULA?: number;
     IDLINEA?: number;
-    ENTREGADOVISIT?: number;
+    ENTREGADOVISITA?: number;
     OBJETIVOVISITA?: number;
     TOTALENTREGADO?: number;
     OBJETIVOTOTAL?: number;
     HZDOSER?: number;
     VISITASCOMPLETADAS?: number;
-    ESTADOALIMENTACIONS?: string;
+    ESTADOALIMENTACION?: string;
     FINALIZADA?: number;
 
 }
@@ -87,5 +87,13 @@ export interface Silo {
     ALIMENTO: string;
 }
 
+
+export interface Alarma {
+    ID: number;
+    DIRECCIONMODBUS: number;
+    IDTIPOALARMA: number;
+    ESTADO: number;
+    IDLINEA: number;
+}
 
 

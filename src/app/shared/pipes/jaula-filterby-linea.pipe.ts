@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Jaula } from './alimentar';
+import { Jaula } from 'src/app/pages/alimentar/alimentar';
 
 @Pipe({
   name: 'jaulaFilterbyLinea',
