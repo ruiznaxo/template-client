@@ -5,45 +5,60 @@
     <div class="row" *ngFor="let linea of lineas;">
         <!-- Inicio Linea -->
         <div class="col-xl-3">
-            <div class="card">
+            <div class="card border border-success">
                 <div class="card-body">
-                    <div class="row">
-
-                        <div class="col-3">
-                            <h4 class="card-title mb-4">{{linea.NOMBRE}}</h4>
-
-                        </div>
-
+                    <h4 class="card-title mb-2">{{linea.NOMBRE}}</h4>
+                    <div class="row justify-content-center mb-3">
                         <div class="button-items">
-                            <button type="button" class="btn btn-success">
-                                <i class="bx bx-play-circle bx-xs align-middle"></i>
+
+                            <button type="button" class="btn btn-outline-success" ngbTooltip="Bitcoin" (click)="setEstadoLinea(linea.ID, 3)">
+                                <i class="bx bx-play font-size-16 align-middle mr-2"></i> Iniciar
                             </button>
-                            <button type="button" class="btn btn-outline-warning">
-                                <i class="bx bx-pause-circle bx-xs align-middle"></i>
+                            <button type="button" class="btn btn-outline-warning" (click)="setEstadoLinea(linea.ID, 2)">
+                                <i class="bx bx-pause font-size-16 align-middle mr-2"></i> Pausar
                             </button>
-                            <button type="button" class="btn btn-outline-danger">
-                                <i class="bx bx-stop-circle bx-xs align-middle"></i>
+                            <button type="button" class="btn btn-outline-danger" (click)="setEstadoLinea(linea.ID, 1)">
+                                <i class="bx bx-stop font-size-16 align-middle mr-2"></i> Detener
                             </button>
                         </div>
-                        Presión:: {{ linea.PRESION }}
-                        Alarma: {{ linea.ALARMA }}
-                        hz soplador: Pendiente
-
-                        <div class="mt-4 text-center">
-                            Alarmas:
-                            <span *ngIf="!linea.ALARMA" class="text-success">Sin Alarmas</span>
-                            <span *ngIf="linea.ALARMA" class="text-danger">Con Alarmas</span>
-                        </div>
-
-                        <div class="mt-4 text-center" *ngIf="linea.ALARMA">
-                            Problemas con: 
-                            <ul>
-                                <li *ngFor="let alarma of alarmas | alarmaFilterbyLinea:linea.ID ">{{ alarma.ID }}</li>
-                            </ul>
-                        </div>
-
-
                     </div>
+
+                    <div class="row text-center">
+                        <div class="col-lg-4">
+                            <div class="mt-1">
+                                <p class="text-muted mb-1">Presión</p>
+                                <h5>{{ linea.PRESION }} <span class="text-success font-size-13">MB <i
+                                            class="mdi mdi-arrow-up ml-1"></i></span></h5>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mt-1">
+                                <p class="text-muted mb-1">Blower HZ</p>
+                                <h5>{{ linea.PRESION }} <span class="text-success font-size-13">Hz <i
+                                            class="mdi mdi-arrow-up ml-1"></i></span></h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    Presión:: {{ linea.PRESION }}
+                    Alarma: {{ linea.ALARMA }}
+                    hz soplador: Pendiente
+                    Programación: {{ getNombreProgramacion(linea.IDPROGRAMACION) }}
+                    Estado: {{linea.ESTADO}}
+                    <div class="mt-4 text-center">
+                        Alarmas:
+                        <span *ngIf="!linea.ALARMA" class="text-success">Sin Alarmas</span>
+                        <span *ngIf="linea.ALARMA" class="text-danger">Con Alarmas</span>
+                    </div>
+
+                    <div class="mt-4 text-center" *ngIf="linea.ALARMA">
+                        Problemas con:
+                        <ul>
+                            <li *ngFor="let alarma of alarmas | alarmaFilterbyLinea:linea.ID ">{{
+                                getNombreTipoAlarma(alarma.IDTIPOALARMA) }}</li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -138,9 +153,6 @@
 
     </div>
 
-    <div class="row">
-
-    </div>
 
 
 </div>

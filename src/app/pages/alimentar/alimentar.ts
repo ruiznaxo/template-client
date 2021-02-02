@@ -23,8 +23,8 @@ export interface Jaula {
     claseEstado?: string;
 }
 
-export interface Linea {  
-    
+export interface Linea {
+
     ID?: number;
     NOMBRE?: string;
     ESTADO?: number;
@@ -49,7 +49,7 @@ export interface Programacion {
 }
 
 export interface Alimentacion {
-    
+
     ID?: number;
     VISITAACTUAL?: number;
     TOTALVISITAS?: number;
@@ -67,13 +67,13 @@ export interface Alimentacion {
 }
 
 export interface Dosificador {
-    ID: number;    
-    PRIORIDAD: number;   
-    MODELOREDUCTOR: string;    
-    DIRECCIONMODBUS: number;    
-    TASAMAX: number;    
-    IDSILO: number;    
-    IDLINEA: number;    
+    ID: number;
+    PRIORIDAD: number;
+    MODELOREDUCTOR: string;
+    DIRECCIONMODBUS: number;
+    TASAMAX: number;
+    IDSILO: number;
+    IDLINEA: number;
     IDALARMA: number;
 }
 
@@ -94,6 +94,12 @@ export interface Alarma {
     IDTIPOALARMA: number;
     ESTADO: number;
     IDLINEA: number;
+}
+
+export interface TipoAlarma {
+    ID: number;
+    TIPOALARMA: string;
+    ACTIVO: number;
 }
 
 

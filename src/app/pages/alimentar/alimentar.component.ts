@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlimentarService } from './alimentar.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import { Jaula, Linea, Alimentacion, Dosificador, Silo, Alarma } from './alimentar';
+import { Jaula, Linea, Alimentacion, Dosificador, Silo, Alarma, TipoAlarma, Programacion } from './alimentar';
 import { forkJoin, Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Options } from '@angular-slider/ngx-slider';
@@ -38,6 +38,10 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   silos: Silo[];
 
+  programaciones: Programacion[];
+
+  tipoAlarmas: TipoAlarma[];
+
   tasaOptions: { idJaula: number, options: Options }[] = [];
 
   private unsubscribe = new Subject<void>();
@@ -51,24 +55,6 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
     this.loadData();
-
-
-    // let sockets = [
-    //   this.wsService.listen("all-lineas"),
-    //   this.wsService.listen("all-jaulas"),
-    //   this.wsService.listen("all-alimentaciones")
-    // ]
-
-    // forkJoin(sockets).pipe(takeUntil(this.unsubscribe))
-    // .subscribe(([lineas, jaulas, alimentaciones, dosificadores, silos]) => {
-    //   console.log("im here");
-      
-    //   console.log(lineas, jaulas);
-      
-    //   this.lineas = lineas;
-    //   this.jaulas = jaulas;
-    //   this.alimentaciones = alimentaciones;
-    // });
 
     this.wsService.listen("all-lineas").subscribe((data: Linea[]) => {   
       this.checkChanges(this.lineas, data)
@@ -103,11 +89,12 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       this.alimentarService.getDosificadores(),
       this.alimentarService.getSilos(),
       this.alimentarService.getAlarmas(),
+      this.alimentarService.getTipoAlarmas(),
     ]
 
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-    .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas]) => {
+    .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas]) => {
       //console.log(lineas);
 
       this.lineas = lineas;
@@ -116,8 +103,10 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       this.jaulas = jaulas
       this.alimentaciones = alimentaciones;
       this.dosificadores = dosificadores;
+      this.programaciones = programaciones;
       this.silos = silos;
       this.alarmas = alarmas;
+      this.tipoAlarmas = tipoAlarmas;
 
       if (this.jaulas && this.dosificadores) {
         this.setOptions(this.jaulas, this.dosificadores)
@@ -286,6 +275,18 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   getOptions(idJaula: number) {
     return this.tasaOptions.find(x => x.idJaula === idJaula).options;
+  }
+
+  getNombreTipoAlarma(idTipoAlarma){
+    return this.tipoAlarmas.find(tipo => tipo.ID === idTipoAlarma).TIPOALARMA
+  }
+
+  getNombreProgramacion(idTProgrmacion){
+    return this.programaciones.find(tipo => tipo.ID === idTProgrmacion).NOMBRE
+  }
+
+  setEstadoLinea(idLinea: number, estado: number){
+    this.alimentarService.updateEstadoLinea(idLinea, estado).subscribe(() => {})    
   }
 
 }

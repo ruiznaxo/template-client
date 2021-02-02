@@ -44,8 +44,16 @@ export class AlimentarService {
     return this.http.get(this.jaulaUrl + "alarma")
   }
 
+  getTipoAlarmas(): Observable<any>{
+    return this.http.get(this.jaulaUrl + "tipoalarma")
+  }
+
   updateTasaJaula(idJaula: number, valorTasa: number){
     this.http.patch(this.jaulaUrl + "jaula/" + idJaula, {tasa: valorTasa})
+  }
+
+  updateEstadoLinea(idLinea: number, estado: number){
+    return this.http.patch(this.jaulaUrl + "linea/" + idLinea, {estado: estado})
   }
 
 }
