@@ -56,25 +56,27 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
     this.loadData();
 
-    this.wsService.listen("all-lineas").subscribe((data: Linea[]) => {   
+    this.wsService.listen("all-lineas").subscribe((data: Linea[]) => {
       this.checkChanges(this.lineas, data)
     })
-    this.wsService.listen("all-jaulas").subscribe((data: Jaula[]) => {      
+    this.wsService.listen("all-jaulas").subscribe((data: Jaula[]) => {
       this.checkChanges(this.jaulas, data)
     })
-    this.wsService.listen("all-alimentaciones").subscribe((data: Alimentacion[]) => {      
+    this.wsService.listen("all-alimentaciones").subscribe((data: Alimentacion[]) => {
       this.checkChanges(this.alimentaciones, data)
     })
-    this.wsService.listen("all-alarmas").subscribe((data: Alarma[]) => {      
+    this.wsService.listen("all-alarmas").subscribe((data: Alarma[]) => {
       this.checkChanges(this.alarmas, data)
     })
   }
 
 
-  checkChanges(thisArray: any[], socketArray: any[]){
-    for (let i = 0; i < socketArray.length; i++) {
-      if(JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])){
-        thisArray[i] = socketArray[i];
+  checkChanges(thisArray: any[], socketArray: any[]) {
+    if(thisArray && socketArray){
+      for (let i = 0; i < socketArray.length; i++) {
+        if (JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])) {
+          thisArray[i] = socketArray[i];
+        }
       }
     }
   }
@@ -94,25 +96,25 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-    .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas]) => {
-      //console.log(lineas);
+      .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas]) => {
+        //console.log(lineas);
 
-      this.lineas = lineas;
-      // jaulas.map(x => x.estado = 0)
-      // jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
-      this.jaulas = jaulas
-      this.alimentaciones = alimentaciones;
-      this.dosificadores = dosificadores;
-      this.programaciones = programaciones;
-      this.silos = silos;
-      this.alarmas = alarmas;
-      this.tipoAlarmas = tipoAlarmas;
+        this.lineas = lineas;
+        // jaulas.map(x => x.estado = 0)
+        // jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
+        this.jaulas = jaulas
+        this.alimentaciones = alimentaciones;
+        this.dosificadores = dosificadores;
+        this.programaciones = programaciones;
+        this.silos = silos;
+        this.alarmas = alarmas;
+        this.tipoAlarmas = tipoAlarmas;
 
-      if (this.jaulas && this.dosificadores) {
-        this.setOptions(this.jaulas, this.dosificadores)
-      }
+        if (this.jaulas && this.dosificadores) {
+          this.setOptions(this.jaulas, this.dosificadores)
+        }
 
-    });
+      });
 
   }
 
@@ -191,7 +193,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
 
-  setTasa(event, idJaula){
+  setTasa(event, idJaula) {
 
     let jaula = this.jaulas.find(x => x.ID === idJaula)
     let doser = this.dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR)
@@ -201,24 +203,24 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     let tasaJaula = 0;
 
     switch (this.selectedFormula) {
-      case 1:    
+      case 1:
         tasaJaula = event.value / 0.06
-        console.log("KGM", tasaJaula);        
+        console.log("KGM", tasaJaula);
         break;
       case 2:
         tasaJaula = event.value / 0.06 / pelletKilo * jaula.CANTIDADPECES
-        console.log("PPM", tasaJaula);      
+        console.log("PPM", tasaJaula);
         break;
       case 3:
         let biomasa = (jaula.CANTIDADPECES * (jaula.PESOPROMEDIO / 1000)) / 1000
         tasaJaula = event.value / 0.06 * biomasa
-        console.log("KTM", tasaJaula); 
+        console.log("KTM", tasaJaula);
         break;
-    
+
       default:
         break;
     }
-    
+
   }
 
   setOptions(jaulas: Jaula[], dosificadores: Dosificador[]) {
@@ -227,8 +229,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         let tasamax = 0;
         let step = 1;
 
-        switch (this.selectedFormula) {          
-          case 1:        
+        switch (this.selectedFormula) {
+          case 1:
             //Kg / min
             tasamax = Math.round(dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX * 0.06)
             step = 1
@@ -277,16 +279,46 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     return this.tasaOptions.find(x => x.idJaula === idJaula).options;
   }
 
-  getNombreTipoAlarma(idTipoAlarma){
+  getNombreTipoAlarma(idTipoAlarma) {
     return this.tipoAlarmas.find(tipo => tipo.ID === idTipoAlarma).TIPOALARMA
   }
 
-  getNombreProgramacion(idTProgrmacion){
+  getNombreProgramacion(idTProgrmacion) {
     return this.programaciones.find(tipo => tipo.ID === idTProgrmacion).NOMBRE
   }
 
-  setEstadoLinea(idLinea: number, estado: number){
-    this.alimentarService.updateEstadoLinea(idLinea, estado).subscribe(() => {})    
+  setEstadoLinea(idLinea: number, estado: number) {
+    this.alimentarService.updateEstadoLinea(idLinea, estado).subscribe(() => { })
+  }
+
+  getBorderCard(tipoEstado: number, alarma: number) {
+
+    let style;
+
+    switch (tipoEstado) {
+      case 1:
+        style = "card border border-info";
+        break;
+      case 2:
+        style = "card border border-warning";
+        break;
+      case 3:
+        style = "card border border-success";
+        break;
+      default:
+        break;
+    }    
+
+    if(alarma){
+      style = "card border border-danger"
+    }
+
+    return style;
+  }
+
+  testIclick(){
+    console.log("works");
+    
   }
 
 }

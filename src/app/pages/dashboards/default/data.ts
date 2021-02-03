@@ -46,7 +46,7 @@ const emailSentBarChart: ChartType = {
 
 const monthlyEarningChart: ChartType = {
     chart: {
-        height: 200,
+        height: 175,
         type: 'radialBar',
         offsetY: -10
     },
@@ -86,7 +86,7 @@ const monthlyEarningChart: ChartType = {
     stroke: {
         dashArray: 4,
     },
-    series: [67],
+    series: [99],
     labels: ['Series A'],
 };
 
