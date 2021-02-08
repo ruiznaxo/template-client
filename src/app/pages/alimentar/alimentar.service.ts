@@ -56,4 +56,12 @@ export class AlimentarService {
     return this.http.patch(this.jaulaUrl + "linea/" + idLinea, {estado: estado})
   }
 
+  updateHzPausa(idLinea: number, hzPausa: number){
+    return this.http.patch(this.jaulaUrl + "linea/hzpausa/" + idLinea, {hzPausa: hzPausa})
+  }
+
+  setJaulaHabilitada(idJaula, valor){      
+    return this.http.patch(this.jaulaUrl + "jaula/habilitada/" + idJaula, {habilitada: valor})
+  }
+
 }

@@ -4,26 +4,35 @@
 
     <div class="row" *ngFor="let linea of lineas;">
         <!-- Inicio Linea -->
-        <div class="col-xl-3">
+        <div class="col-xl-2">
             <div [class]="getBorderCard(linea.ESTADO, linea.ALARMA)">
                 <div class="card-body">
                     <h4 class="card-title mb-2">{{linea.NOMBRE}}</h4>
                     <div class="row justify-content-center mb-3">
                         <div class="button-items">
-
-                            <button type="button" [disabled]="linea.ALARMA || linea.ESTADO == 3"
-                                class="btn btn-outline-success" ngbTooltip="Bitcoin"
-                                (click)="setEstadoLinea(linea.ID, 3)">
-                                <i class="bx bx-play font-size-16 align-middle mr-2"></i> Iniciar
+                            <!-- <button type="button" [disabled]="linea.ALARMA || linea.ESTADO == 3 || linea.FINALIZADA"
+                                class="btn btn-sm btn-outline-success" (click)="setEstadoLinea(linea.ID, 3)">
+                                <i class="bx bx-play font-size-12 align-middle mr-2"></i> Iniciar
                             </button>
-                            <button type="button" [disabled]="linea.ESTADO != 3" class="btn btn-outline-warning"
+                            <button type="button" [disabled]="linea.ESTADO != 3" class="btn btn-sm btn-outline-warning"
                                 (click)="setEstadoLinea(linea.ID, 2)">
                                 <i class="bx bx-pause font-size-16 align-middle mr-2"></i> Pausar
                             </button>
-                            <button type="button" [disabled]="linea.ESTADO == 1" class="btn btn-outline-danger"
-                                (click)="setEstadoLinea(linea.ID, 1)">
+                            <button type="button" [disabled]="linea.ESTADO == 1"
+                                class="btn btn-sm btn-outline-secondary" (click)="setEstadoLinea(linea.ID, 1)">
                                 <i class="bx bx-stop font-size-16 align-middle mr-2"></i> Detener
-                            </button>
+                            </button> -->
+                            <app-button [text]="'Iniciar'" [typeButton]="'btn-outline-success'"
+                                (clickButton)="setEstadoLinea(linea.ID, 3)"
+                                [disable]="linea.ALARMA || linea.ESTADO == 3 || linea.FINALIZADA || jaulasHabilitadas(linea.ID)"
+                                [tooltipDisable]="getIniciarTooltip(linea.ID)" [icon]="'play'"></app-button>
+                            <app-button [text]="'Pausar'" [typeButton]="'btn-outline-warning'"
+                                (clickButton)="setEstadoLinea(linea.ID, 2)" [disable]="linea.ESTADO != 3"
+                                [icon]="'pause'"></app-button>
+                            <app-button [text]="'Detener'" [typeButton]="'btn-outline-secondary'"
+                                (clickButton)="setEstadoLinea(linea.ID, 1)"
+                                [disable]="linea.ESTADO == 1" [icon]="'stop'">
+                            </app-button>
                         </div>
                     </div>
 
@@ -31,36 +40,30 @@
                         <div class="col-lg-4">
                             <div class="mt-1">
                                 <p class="text-muted mb-2">Presión</p>
-                                <h5>{{ linea.PRESION }}
+                                <h4>{{ linea.PRESION }}
                                     <span class="text-success font-size-13">MB </span>
-                                </h5>
+                                </h4>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="mt-1">
                                 <p class="text-muted mb-2">Blower HZ</p>
-                                <h5>{{ linea.PRESION }}
+                                <h4>{{ linea.PRESION }}
                                     <span class="text-success font-size-13">Hz </span>
-                                </h5>
+                                </h4>
                             </div>
                         </div>
 
                         <div class="col-lg-4" *ngIf="linea.ESTADO == 2">
                             <div class="mt-1">
                                 <p class="text-muted mb-2">Hz Pausa</p>
-                                <h4>{{ linea.HZPAUSA }}
-                                    <span class="text-success font-size-13">Hz
-                                        <i class="bx bx-upvote ml-1" (click)="testIclick()"></i>
-                                        <i class="bx bx-downvote ml-1" (click)="testIclick()"></i>
-                                    </span>
-                                </h4>
+                                <ngx-slider [value]="linea.HZPAUSA" [options]="hzpausaOptions"
+                                    (userChangeEnd)="updateHzPausa($event, linea.ID)">
+                                </ngx-slider>
                             </div>
                         </div>
                     </div>
 
-                    Presión:: {{ linea.PRESION }}
-                    Alarma: {{ linea.ALARMA }}
-                    hz soplador: Pendiente
                     Programación: {{ getNombreProgramacion(linea.IDPROGRAMACION) }}
                     Estado: {{linea.ESTADO}}
                     <div class="mt-4 text-center">
@@ -80,10 +83,10 @@
                 </div>
             </div>
         </div>
-        <!-- Fin Linea -->
 
-        <!-- Inicio Jaulas Por Linea -->
-        <div class="col-xl-5">
+
+
+        <!-- <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Jaulas</h4>
@@ -166,8 +169,39 @@
 
                 </div>
             </div>
+        </div> -->
+
+
+        <!-- Inicio Jaulas Por Linea -->
+        <div class="col-xl-5">
+            <div class="row">
+                <div class="col-xl-6" *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4 float-sm-left">{{ jaula.NOMBRE }}</h4>
+                            <div class="float-sm-right">
+                                <!-- <div class="custom-control custom-switch mb-3" dir="ltr">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchsizesm" checked>
+                                    <label class="custom-control-label" for="customSwitchsizesm"></label>
+                                </div> -->
+                                <div
+                                    class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
+                                    <input [disabled]="linea.ESTADO == 3" type="checkbox" class="custom-control-input"
+                                        id="{{ 'check' + jaula.ID }}" [checked]="jaula.HABILITADA"
+                                        [(ngModel)]="jaula.HABILITADA" (ngModelChange)="logCheck(jaula.ID)">
+                                    <label class="custom-control-label" for="{{ 'check' + jaula.ID }}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <!-- Fin Jaulas Por Linea -->
+
+
+        <!-- Fin Linea -->
 
     </div>
 

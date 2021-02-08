@@ -1,0 +1,20 @@
+<div [ngbTooltip]="tooltipButton" >
+    <button 
+        (click)="click($event)" 
+        class="btn btn-sm" 
+        [class.btn-outline-primary]="typeButton == type.primaryout"
+        [class.btn-outline-success]="typeButton == type.successout"
+        [class.btn-outline-danger]="typeButton == type.dangerout" 
+        [class.btn-outline-secondary]="typeButton == type.secondaryout" 
+        [class.btn-outline-warning]="typeButton == type.warningout" 
+
+        [class.btn-primary]="typeButton == type.primary"
+        [class.btn-success]="typeButton == type.success"
+        [class.btn-danger]="typeButton == type.danger" 
+        [class.btn-secondary]="typeButton == type.secondary" 
+        [class.btn-warning]="typeButton == type.warning" 
+        [class.disabled]="disableButton"
+        [disabled]="disableButton">
+        <i class="bx bx-{{icon}} font-size-16 align-middle mr-2" *ngIf="icon"></i> {{text}}
+    </button>
+</div>

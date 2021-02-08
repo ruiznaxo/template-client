@@ -44,6 +44,12 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   tasaOptions: { idJaula: number, options: Options }[] = [];
 
+  hzpausaOptions: Options = {
+    ceil: 50,
+    floor: 0,
+    step: 1
+  }
+
   private unsubscribe = new Subject<void>();
 
 
@@ -72,7 +78,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
 
   checkChanges(thisArray: any[], socketArray: any[]) {
-    if(thisArray && socketArray){
+    if (thisArray && socketArray) {
       for (let i = 0; i < socketArray.length; i++) {
         if (JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])) {
           thisArray[i] = socketArray[i];
@@ -297,7 +303,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
     switch (tipoEstado) {
       case 1:
-        style = "card border border-info";
+        style = "card border border-secondary";
         break;
       case 2:
         style = "card border border-warning";
@@ -307,18 +313,52 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         break;
       default:
         break;
-    }    
+    }
 
-    if(alarma){
+    if (alarma) {
       style = "card border border-danger"
     }
 
     return style;
   }
 
-  testIclick(){
-    console.log("works");
-    
+  updateHzPausa(event, idlinea: number) {
+    this.alimentarService.updateHzPausa(idlinea, event.value).subscribe(() => { })
+  }
+
+  logCheck(idJula: number) {
+    let jaula = this.jaulas.find(x => x.ID === idJula);
+    this.alimentarService.setJaulaHabilitada(idJula, jaula.HABILITADA).subscribe();
+
+  }
+
+  getIniciarTooltip(idLInea): string {
+    let linea = this.lineas.find(linea => linea.ID == idLInea);
+    let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLInea);
+
+    if (linea.ESTADO === 3 || linea.ALARMA) {
+      return "";
+    }
+
+    if (this.jaulasHabilitadas(idLInea)) {
+      return "Debe Habilitar Jaulas"
+    }
+
+  }
+
+  jaulasHabilitadas(idLinea): boolean {
+    let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLinea);
+    let disableTooltip = true;
+
+    for (let index = 0; index < jaulas.length; index++) {
+      if (jaulas[index].HABILITADA) {
+        disableTooltip = false;
+        break;
+      }      
+    }
+
+    return disableTooltip;
+
   }
 
 }

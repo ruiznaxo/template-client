@@ -86,7 +86,7 @@ const monthlyEarningChart: ChartType = {
     stroke: {
         dashArray: 4,
     },
-    series: [99],
+    series: [199],
     labels: ['Series A'],
 };
 
