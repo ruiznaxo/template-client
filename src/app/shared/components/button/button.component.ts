@@ -36,9 +36,7 @@ export class ButtonComponent implements OnInit {
       changes.tooltipDisable ||
       changes.tooltip
     ) {
-      if (this.disable) {
-        console.log("is disabled");
-        
+      if (this.disable) {        
         this.disableButton = true;
         this.tooltipButton = this.tooltipDisable;
       } else {

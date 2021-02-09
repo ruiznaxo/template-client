@@ -329,7 +329,12 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   logCheck(idJula: number) {
     let jaula = this.jaulas.find(x => x.ID === idJula);
     this.alimentarService.setJaulaHabilitada(idJula, jaula.HABILITADA).subscribe();
+  }
 
+  cambiarHabilitada(idJula: number) {
+    let jaula = this.jaulas.find(x => x.ID === idJula);
+    let value = !jaula.HABILITADA
+    this.alimentarService.setJaulaHabilitada(idJula, value).subscribe();
   }
 
   getIniciarTooltip(idLInea): string {

@@ -30,8 +30,8 @@
                                 (clickButton)="setEstadoLinea(linea.ID, 2)" [disable]="linea.ESTADO != 3"
                                 [icon]="'pause'"></app-button>
                             <app-button [text]="'Detener'" [typeButton]="'btn-outline-secondary'"
-                                (clickButton)="setEstadoLinea(linea.ID, 1)"
-                                [disable]="linea.ESTADO == 1" [icon]="'stop'">
+                                (clickButton)="setEstadoLinea(linea.ID, 1)" [disable]="linea.ESTADO == 1"
+                                [icon]="'stop'">
                             </app-button>
                         </div>
                     </div>
@@ -173,30 +173,151 @@
 
 
         <!-- Inicio Jaulas Por Linea -->
-        <div class="col-xl-5">
+        <!-- <div class="col-xl-5">
             <div class="row">
                 <div class="col-xl-6" *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title mb-4 float-sm-left">{{ jaula.NOMBRE }}</h4>
-                            <div class="float-sm-right">
-                                <!-- <div class="custom-control custom-switch mb-3" dir="ltr">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitchsizesm" checked>
-                                    <label class="custom-control-label" for="customSwitchsizesm"></label>
-                                </div> -->
-                                <div
-                                    class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
-                                    <input [disabled]="linea.ESTADO == 3" type="checkbox" class="custom-control-input"
-                                        id="{{ 'check' + jaula.ID }}" [checked]="jaula.HABILITADA"
-                                        [(ngModel)]="jaula.HABILITADA" (ngModelChange)="logCheck(jaula.ID)">
-                                    <label class="custom-control-label" for="{{ 'check' + jaula.ID }}"></label>
+                                <h4 class="card-title mb-4 float-sm-left">{{ jaula.NOMBRE }}</h4>
+                                <div class="float-sm-right">
+                                    <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
+                                        <input [disabled]="linea.ESTADO == 3" type="checkbox"
+                                            class="custom-control-input" id="{{ 'check' + jaula.ID }}"
+                                            [checked]="jaula.HABILITADA" [(ngModel)]="jaula.HABILITADA"
+                                            (ngModelChange)="logCheck(jaula.ID)">
+                                        <label class="custom-control-label" for="{{ 'check' + jaula.ID }}"></label>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+                                    
+                                    <ng-container
+                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyJaula : jaula.ID">
+                                        VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
+                                        TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
+                                        OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
+                                        ENTREGADOVISITA: {{alimentacion.ENTREGADOVISITA}}
+                                        TOTALENTREGADO: {{alimentacion.TOTALENTREGADO}}
+                                        OBJETIVOTOTAL: {{alimentacion.OBJETIVOTOTAL}}
+                                        HZDOSER: {{alimentacion.HZDOSER}}
+                                        VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
+                                        FINALIZADA: {{alimentacion.FINALIZADA}}
+                                        ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
+                                    </ng-container>
+                                </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div> -->
+
+        <div class="col-xl-6">
+            <div class="row">
+                <div class="col-xl-6" *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i">
+                    <div class="card"
+                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyJaula : jaula.ID">
+                        <div class="card-body border-bottom">
+                            <div class="row">
+                                <div class="col-md-4 col-9">
+                                    <h5 class="font-size-15 mb-1">{{jaula.NOMBRE}}</h5>
+                                    <p class="text-muted mb-0"><i
+                                            class="mdi mdi-circle text-success align-middle mr-1"></i>{{alimentacion.ESTADOALIMENTACION}}
+                                    </p>
+                                </div>
+                                <div class="col-md-8 col-3">
+                                    <ul class="list-inline user-chat-nav text-right mb-0">
+
+                                        <li class="list-inline-item d-none d-sm-inline-block">
+                                            <div class="dropdown" ngbDropdown>
+                                                <button class="btn nav-btn dropdown-toggle" type="button"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                    ngbDropdownToggle>
+                                                    <i class="bx bx-cog"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                                                    <a class="dropdown-item">Parámetros</a>
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                        <li class="list-inline-item">
+                                            <button class="btn nav-btn dropdown-toggle" type="button"
+                                                (click)="cambiarHabilitada(jaula.ID)">
+                                                <i class="bx bx-x" *ngIf="!jaula.HABILITADA"></i>
+                                                <i class="bx bx-check " *ngIf="jaula.HABILITADA"></i>
+                                            </button>
+
+                                            <!-- <div
+                                                class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
+                                                <input [disabled]="linea.ESTADO == 3" type="checkbox"
+                                                    class="custom-control-input" id="{{ 'check' + jaula.ID }}"
+                                                    [checked]="jaula.HABILITADA" [(ngModel)]="jaula.HABILITADA"
+                                                    (ngModelChange)="logCheck(jaula.ID)">
+                                                <label class="custom-control-label"
+                                                    for="{{ 'check' + jaula.ID }}"></label>
+                                            </div> -->
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pb-2">
+
+                            <div class="row">
+                                <div class="col-md-5">
+
+                                    <div class="text-left">
+                                        <h5>{{alimentacion.VISITAACTUAL}} / {{alimentacion.TOTALVISITAS}}</h5>
+                                        <p>Visitas</p>
+                                    </div>
+                                    <div class="text-left">
+                                        <h5>{{alimentacion.ENTREGADOVISITA}}<span class="text-secondary font-size-13">
+                                                Kg</span> / {{alimentacion.OBJETIVOVISITA}}<span
+                                                class="text-secondary font-size-13"> Kg</span></h5>
+                                        <p>Entregado</p>
+                                    </div>
+                                    <div class="text-left">
+                                        <h5>{{alimentacion.TOTALENTREGADO}}<span class="text-secondary font-size-13">
+                                                Kg</span> / {{alimentacion.OBJETIVOTOTAL}}<span
+                                                class="text-secondary font-size-13"> Kg</span></h5>
+                                        <p>Entregado Total</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="">
+                                    HZDOSER: {{alimentacion.HZDOSER}}
+                                    VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
+                                    FINALIZADA: {{alimentacion.FINALIZADA}}
+                                    ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-top text-center">
+                            <div class="contact-links d-flex font-size-20">
+                              <div class="flex-fill">
+                                <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i> 10 Seg</a>
+                              </div>
+                              <div class="flex-fill">
+                                <a href="javascript: void(0);" ngbTooltip="Projects"><i class="bx bx-pie-chart-alt"></i> 10 Kg</a>
+                              </div>
+                              <div class="flex-fill">
+                                <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"> 40 Hz</i></a>
+                              </div>
+                              <div class="flex-fill">
+                                <p ngbTooltip="Tiempo de Espera"><i class="bx bx-time-five"></i> 00:00:00</p>
+                              </div>
+                            </div>
+                          </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
+
 
         <!-- Fin Jaulas Por Linea -->
 

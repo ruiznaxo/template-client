@@ -74,6 +74,16 @@
 
 
 .user-chat-nav{
+  .nav-btn{
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    box-shadow: none;
+    padding: 0;
+    font-size: 16px;
+    background-color: $light;
+    border-radius: 50%;
+  }
   .dropdown{
     .nav-btn{
       height: 40px;
