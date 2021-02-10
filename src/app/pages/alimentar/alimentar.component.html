@@ -227,17 +227,11 @@
                                 <div class="col-md-8 col-3">
                                     <ul class="list-inline user-chat-nav text-right mb-0">
 
-                                        <li class="list-inline-item d-none d-sm-inline-block">
-                                            <div class="dropdown" ngbDropdown>
-                                                <button class="btn nav-btn dropdown-toggle" type="button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                                    ngbDropdownToggle>
-                                                    <i class="bx bx-cog"></i>
-                                                </button>
-                                                <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-                                                    <a class="dropdown-item">Parámetros</a>
-                                                </div>
-                                            </div>
+                                        <li class="list-inline-item">
+                                            <button class="btn nav-btn dropdown-toggle" type="button"
+                                                (click)="scrollModal(scrollDataModal, jaula.ID)">
+                                                <i class="bx bx-cog"></i>
+                                            </button>
                                         </li>
 
                                         <li class="list-inline-item">
@@ -265,53 +259,56 @@
                         <div class="card-body pb-2">
 
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="text-left">
+                                                <h5>{{alimentacion.VISITAACTUAL}} / {{alimentacion.TOTALVISITAS}}</h5>
+                                                <p>Visitas</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="text-left">
+                                                <h5>{{alimentacion.ENTREGADOVISITA | number:'':'es'}}<span
+                                                        class="text-secondary font-size-13">
+                                                        Kg</span> / {{alimentacion.OBJETIVOVISITA |
+                                                    number:'':'es'}}<span class="text-secondary font-size-13"> Kg</span>
+                                                </h5>
+                                                <p>Entregado Visita</p>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="text-left">
-                                        <h5>{{alimentacion.VISITAACTUAL}} / {{alimentacion.TOTALVISITAS}}</h5>
-                                        <p>Visitas</p>
-                                    </div>
-                                    <div class="text-left">
-                                        <h5>{{alimentacion.ENTREGADOVISITA}}<span class="text-secondary font-size-13">
-                                                Kg</span> / {{alimentacion.OBJETIVOVISITA}}<span
-                                                class="text-secondary font-size-13"> Kg</span></h5>
-                                        <p>Entregado</p>
-                                    </div>
-                                    <div class="text-left">
-                                        <h5>{{alimentacion.TOTALENTREGADO}}<span class="text-secondary font-size-13">
-                                                Kg</span> / {{alimentacion.OBJETIVOTOTAL}}<span
+                                        <h5>{{alimentacion.TOTALENTREGADO | number:'':'es'}}<span
+                                                class="text-secondary font-size-13">
+                                                Kg</span> / {{alimentacion.OBJETIVOTOTAL | number:'':'es'}}<span
                                                 class="text-secondary font-size-13"> Kg</span></h5>
                                         <p>Entregado Total</p>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="">
-                                    HZDOSER: {{alimentacion.HZDOSER}}
-                                    VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
-                                    FINALIZADA: {{alimentacion.FINALIZADA}}
-                                    ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
-                                </div>
-
-                            </div>
                         </div>
 
                         <div class="card-footer bg-transparent border-top text-center">
-                            <div class="contact-links d-flex font-size-20">
-                              <div class="flex-fill">
-                                <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i> 10 Seg</a>
-                              </div>
-                              <div class="flex-fill">
-                                <a href="javascript: void(0);" ngbTooltip="Projects"><i class="bx bx-pie-chart-alt"></i> 10 Kg</a>
-                              </div>
-                              <div class="flex-fill">
-                                <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"> 40 Hz</i></a>
-                              </div>
-                              <div class="flex-fill">
-                                <p ngbTooltip="Tiempo de Espera"><i class="bx bx-time-five"></i> 00:00:00</p>
-                              </div>
+                            <div class="contact-links d-flex font-size-14">
+                                <div class="flex-fill">
+                                    <a ngbTooltip="Dosificador"><i class="fas fa-wind"></i> {{jaula.HZSOPLADOR}} Hz</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <a ngbTooltip="Soplado"><i class="fas fa-stopwatch-20"></i> {{jaula.TIEMPOSOPLADO}}
+                                        Seg</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <a ngbTooltip="Monorración"><i class="fas fa-weight-hanging"></i>
+                                        {{jaula.MONORRACION | number:'':'es'}} Kg</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <a ngbTooltip="Tiempo de Espera"><i class="fas fa-clock"></i>
+                                        {{jaula.TIEMPOESPERA}}</a>
+                                </div>
                             </div>
-                          </div>
+                        </div>
 
                     </div>
                 </div>
@@ -332,17 +329,35 @@
 
 <!-- Scrollable Modal -->
 <ng-template #scrollDataModal let-modal>
-    <div class="modal-header">
-        <h5 class="modal-title mt-0">Parametros</h5>
+    <div class="modal-header" *ngIf="jaulaPopUp">
+        <h5 class="modal-title mt-0">Parametros {{jaulaPopUp.NOMBRE}}</h5>
         <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas
-            eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-            laoreet rutrum faucibus dolor auctor.</p>
+        <div class="row">
+            <div class="col-md-6" *ngIf="tasaOptions && jaulaPopUp">
+                <div class="p-3">
+                    <div class="row">
+                        <h5 class="font-size-28 pt-2 col-4">TASA </h5>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <select [(ngModel)]="selectedFormula" (ngModelChange)="cambioFormula()"
+                                    id="formrow-inputState" class="form-control">
+                                    <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
+                                        {{ item.formula }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <ngx-slider [value]="getTasaVisible(jaulaPopUp.ID)" [options]="getOptions(jaulaPopUp.ID)"
+                        (userChangeEnd)="setTasa($event, jaulaPopUp.ID)">
+                    </ngx-slider>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Cerrar</button>

@@ -7,6 +7,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Options } from '@angular-slider/ngx-slider';
 import { takeUntil } from 'rxjs/operators';
 
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es';
+
 @Component({
   selector: 'app-alimentar',
   templateUrl: './alimentar.component.html',
@@ -42,6 +45,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   tipoAlarmas: TipoAlarma[];
 
+  jaulaPopUp: Jaula;
+
   tasaOptions: { idJaula: number, options: Options }[] = [];
 
   hzpausaOptions: Options = {
@@ -58,6 +63,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    registerLocaleData( es );
+
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
     this.loadData();
@@ -137,7 +144,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
 
-  scrollModal(scrollDataModal: any) {
+  scrollModal(scrollDataModal: any, idJaula) {
+    this.jaulaPopUp = this.jaulas.find(jaula => jaula.ID === idJaula)
     this.modalService.open(scrollDataModal, { scrollable: true, centered: true });
   }
 

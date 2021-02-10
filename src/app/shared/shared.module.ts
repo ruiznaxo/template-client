@@ -27,7 +27,8 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     AlimentacionFilterbyJaulaPipe, 
     JaulaFilterbyLineaPipe,
     AlarmaFilterbyLineaPipe,
-    ButtonComponent
+    ButtonComponent,
+    PopupComponent
   ]
 })
 
