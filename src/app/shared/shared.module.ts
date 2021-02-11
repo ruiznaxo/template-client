@@ -12,6 +12,9 @@ import { AlarmaFilterbyLineaPipe } from './pipes/alarmas-filterby-linea.pipe';
 import { ButtonComponent } from './components/button/button.component';
 import { PopupComponent } from './components/popup/popup.component';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
+import { NumberPickerModule } from 'ng-number-picker';
 
 @NgModule({
   declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe, ButtonComponent, PopupComponent],
@@ -21,6 +24,9 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     WidgetModule,
     NgxSliderModule,
     NgbTooltipModule,
+    NgSelectModule,
+    FormsModule,
+    NumberPickerModule
   ],
   exports:[
     NgxSliderModule,
@@ -28,7 +34,10 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     JaulaFilterbyLineaPipe,
     AlarmaFilterbyLineaPipe,
     ButtonComponent,
-    PopupComponent
+    PopupComponent,
+    NgSelectModule,
+    FormsModule,
+    NumberPickerModule
   ]
 })
 

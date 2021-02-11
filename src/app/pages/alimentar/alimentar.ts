@@ -102,4 +102,14 @@ export interface TipoAlarma {
     ACTIVO: number;
 }
 
+export interface Selectora {   
+    ID: number;
+    SALIDAS: number;
+    MODELO: string;    
+    DIRECCIONMODBUS: number;   
+    IDLINEA: number;    
+    IDALARMA: number;
+}
+
+
 

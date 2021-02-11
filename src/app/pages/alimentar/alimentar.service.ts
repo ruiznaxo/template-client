@@ -10,58 +10,62 @@ import { Jaula } from './alimentar';
 })
 export class AlimentarService {
 
-  jaulaUrl: string;
+  baseUrl: string;
 
   constructor(private http: HttpClient, public ws: WebsocketService) {
-    this.jaulaUrl = environment.baseUrl  
+    this.baseUrl = environment.baseUrl  
   } 
 
   getJaulas(): Observable<Jaula[]>{
-    return this.http.get<Jaula[]>(this.jaulaUrl + "jaula")
+    return this.http.get<Jaula[]>(this.baseUrl + "jaula")
   }
   
   getLineas(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "linea")
+    return this.http.get(this.baseUrl + "linea")
   }
   
   getProgramaciones(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "programacion")
+    return this.http.get(this.baseUrl + "programacion")
   }
 
   getAlimentaciones(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "alimentacion")
+    return this.http.get(this.baseUrl + "alimentacion")
   }
 
   getDosificadores(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "dosificador")
+    return this.http.get(this.baseUrl + "dosificador")
   }
 
   getSilos(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "silo")
+    return this.http.get(this.baseUrl + "silo")
   }
 
   getAlarmas(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "alarma")
+    return this.http.get(this.baseUrl + "alarma")
   }
 
   getTipoAlarmas(): Observable<any>{
-    return this.http.get(this.jaulaUrl + "tipoalarma")
+    return this.http.get(this.baseUrl + "tipoalarma")
+  }
+
+  getSelectoras(): Observable<any>{
+    return this.http.get(this.baseUrl + "selectora")
   }
 
   updateTasaJaula(idJaula: number, valorTasa: number){
-    this.http.patch(this.jaulaUrl + "jaula/" + idJaula, {tasa: valorTasa})
+    this.http.patch(this.baseUrl + "jaula/" + idJaula, {tasa: valorTasa})
   }
 
   updateEstadoLinea(idLinea: number, estado: number){
-    return this.http.patch(this.jaulaUrl + "linea/" + idLinea, {estado: estado})
+    return this.http.patch(this.baseUrl + "linea/" + idLinea, {estado: estado})
   }
 
   updateHzPausa(idLinea: number, hzPausa: number){
-    return this.http.patch(this.jaulaUrl + "linea/hzpausa/" + idLinea, {hzPausa: hzPausa})
+    return this.http.patch(this.baseUrl + "linea/hzpausa/" + idLinea, {hzPausa: hzPausa})
   }
 
   setJaulaHabilitada(idJaula, valor){      
-    return this.http.patch(this.jaulaUrl + "jaula/habilitada/" + idJaula, {habilitada: valor})
+    return this.http.patch(this.baseUrl + "jaula/habilitada/" + idJaula, {habilitada: valor})
   }
 
 }

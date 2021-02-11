@@ -53,8 +53,13 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.formData = this.formBuilder.group({
-      title: ['', [Validators.required]],
-      category: ['', [Validators.required]],
+      monorracion: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      selectora: ['', [Validators.required]],
+      silo: ['', [Validators.required]],
+      tiempoSoplado: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      tiempoEspera: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      hzSoplador: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
+      tasa: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
     });
 
     this.formEditData = this.formBuilder.group({

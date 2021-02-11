@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlimentarService } from './alimentar.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import { Jaula, Linea, Alimentacion, Dosificador, Silo, Alarma, TipoAlarma, Programacion } from './alimentar';
+import { Jaula, Linea, Alimentacion, Dosificador, Silo, Alarma, TipoAlarma, Programacion, Selectora } from './alimentar';
 import { forkJoin, Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Options } from '@angular-slider/ngx-slider';
@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-alimentar',
@@ -25,7 +26,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     { id: 3, formula: "KTM" },
   ]
 
-  selectedFormula: number = 2;
+  // selectedFormula: { id: number, formula: string } = this.tasaSelect[0];
+  selectedFormula: number = 1;
 
   breadCrumbItems: Array<{}>;
 
@@ -40,12 +42,19 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   dosificadores: Dosificador[];
 
   silos: Silo[];
+  selectoras: Selectora[];
+
+  soplado: number;
 
   programaciones: Programacion[];
 
   tipoAlarmas: TipoAlarma[];
 
   jaulaPopUp: Jaula;
+
+  silosPopUp: Silo[];
+
+  selectedSilo: number; 
 
   tasaOptions: { idJaula: number, options: Options }[] = [];
 
@@ -55,15 +64,48 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     step: 1
   }
 
+  selectedCar: number = 1;
+
+    cars = [
+        { id: 1, name: 'Volvo' },
+        { id: 2, name: 'Saab' },
+        { id: 3, name: 'Opel' },
+        { id: 4, name: 'Audi' },
+    ];
+
+  parametrosForm: FormGroup;  
+
   private unsubscribe = new Subject<void>();
 
+  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal, 
+    private formBuilder: FormBuilder) {
 
-  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal) {
+      this.parametrosForm = new FormGroup({
+        monorracion: new FormControl(),
+        selectora: new FormControl(),
+        silo:new FormControl(),
+        tiempoSoplado: new FormControl(),
+        tiempoEspera: new FormControl(),
+        hzSoplador:new FormControl(),
+        tasa: new FormControl(),
+        factorActividad: new FormControl(),
+      });
 
   }
 
   ngOnInit(): void {
     registerLocaleData( es );
+
+    this.parametrosForm = this.formBuilder.group({
+      monorracion: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      selectora: ['', [Validators.required]],
+      silo: ['', [Validators.required]],
+      tiempoSoplado: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      tiempoEspera: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
+      hzSoplador: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
+      tasa: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
+      factorActividad: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
+    });
 
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
@@ -73,7 +115,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       this.checkChanges(this.lineas, data)
     })
     this.wsService.listen("all-jaulas").subscribe((data: Jaula[]) => {
-      this.checkChanges(this.jaulas, data)
+      this.checkChanges(this.jaulas, data, true)
     })
     this.wsService.listen("all-alimentaciones").subscribe((data: Alimentacion[]) => {
       this.checkChanges(this.alimentaciones, data)
@@ -84,11 +126,19 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
 
-  checkChanges(thisArray: any[], socketArray: any[]) {
+  checkChanges(thisArray: any[], socketArray: any[], isJaula?: boolean) {
     if (thisArray && socketArray) {
       for (let i = 0; i < socketArray.length; i++) {
         if (JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])) {
           thisArray[i] = socketArray[i];
+          if(isJaula){
+            if(thisArray[i].ID === this.jaulaPopUp.ID && this.jaulaPopUp){
+              console.log("Im HEre");
+              
+              this.jaulaPopUp = thisArray[i];
+              this.updateJaulaPopup(this.jaulaPopUp)
+            }
+          }
         }
       }
     }
@@ -105,16 +155,15 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       this.alimentarService.getSilos(),
       this.alimentarService.getAlarmas(),
       this.alimentarService.getTipoAlarmas(),
+      this.alimentarService.getSelectoras(),
     ]
 
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas]) => {
+      .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas, selectoras]) => {
         //console.log(lineas);
 
         this.lineas = lineas;
-        // jaulas.map(x => x.estado = 0)
-        // jaulas.map(x => x.claseEstado = this.setClaseEstado(x.estado))
         this.jaulas = jaulas
         this.alimentaciones = alimentaciones;
         this.dosificadores = dosificadores;
@@ -122,6 +171,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         this.silos = silos;
         this.alarmas = alarmas;
         this.tipoAlarmas = tipoAlarmas;
+        this.selectoras = selectoras;
 
         if (this.jaulas && this.dosificadores) {
           this.setOptions(this.jaulas, this.dosificadores)
@@ -144,10 +194,32 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
 
-  scrollModal(scrollDataModal: any, idJaula) {
+  showPopup(scrollDataModal: any, idJaula) {
     this.jaulaPopUp = this.jaulas.find(jaula => jaula.ID === idJaula)
-    this.modalService.open(scrollDataModal, { scrollable: true, centered: true });
+
+    this.updateJaulaPopup(this.jaulaPopUp)
+
+    let dosificadores = this.dosificadores.filter(doser => doser.IDLINEA === this.jaulaPopUp.IDLINEA).map(a => a.ID);
+    this.silosPopUp = this.silos.filter((({ID}) => dosificadores.includes(ID)));
+    
+    this.modalService.open(scrollDataModal, {size: 'lg', scrollable: true, centered: true });
   }
+
+  updateJaulaPopup(jaula: Jaula){
+    this.soplado = jaula.TIEMPOSOPLADO
+
+    this.parametrosForm.setValue({
+      monorracion: jaula.MONORRACION, 
+      selectora: jaula.IDSELECTORA,
+      silo: jaula.IDDOSIFICADOR,
+      tiempoSoplado: jaula.TIEMPOSOPLADO,
+      tiempoEspera: jaula.TIEMPOESPERA,
+      hzSoplador: jaula.HZSOPLADOR,
+      tasa: jaula.TASA,
+      factorActividad: jaula.FACTORACTIVIDAD,
+    });
+  }
+
 
   desactivar(idJaula: number) {
     let jaula = this.jaulas.find(x => x.ID === idJaula)
@@ -190,6 +262,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     let silo = this.silos.find(x => x.ID === doser.IDSILO);
     let pelletKilo = silo.PELLETKILO
 
+    // switch (this.selectedFormula.id) {
     switch (this.selectedFormula) {
       case 1:
         //Kg / min
@@ -216,6 +289,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
     let tasaJaula = 0;
 
+    // switch (this.selectedFormula.id) {
     switch (this.selectedFormula) {
       case 1:
         tasaJaula = event.value / 0.06
@@ -243,6 +317,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         let tasamax = 0;
         let step = 1;
 
+        // switch (this.selectedFormula.id) {
         switch (this.selectedFormula) {
           case 1:
             //Kg / min
