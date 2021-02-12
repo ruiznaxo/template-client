@@ -18,93 +18,82 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 })
 export class AlimentarComponent implements OnInit, OnDestroy {
 
-  active = 1;
-
+  //Array de Formulas para Seleccionar sobre slider de TASA
   tasaSelect: { id: number, formula: string }[] = [
     { id: 1, formula: "KGM" },
     { id: 2, formula: "PPM" },
     { id: 3, formula: "KTM" },
   ]
-
-  // selectedFormula: { id: number, formula: string } = this.tasaSelect[0];
+  //Formula Seleccionada por defecto y actualizable cuando de cambia con ngModel
   selectedFormula: number = 1;
 
+  //propositos de Template
   breadCrumbItems: Array<{}>;
 
+  //Arreglos que Contienen los datos 
   jaulas: Jaula[];
-
   lineas: Linea[];
-
   alarmas: Alarma[];
-
   alimentaciones: Alimentacion[];
-
   dosificadores: Dosificador[];
-
   silos: Silo[];
   selectoras: Selectora[];
-
-  soplado: number;
-
   programaciones: Programacion[];
-
   tipoAlarmas: TipoAlarma[];
 
+  //Jaula a Actualizar parametros en popup
   jaulaPopUp: Jaula;
-
+  //Lista de Silos para popup
   silosPopUp: Silo[];
 
-  selectedSilo: number; 
-
+  //
   tasaOptions: { idJaula: number, options: Options }[] = [];
 
+  //Opciones para slider de HZ
   hzpausaOptions: Options = {
     ceil: 50,
     floor: 0,
     step: 1
   }
 
-  selectedCar: number = 1;
+  //Array para elegir la salida de la selectora
+  salidasSelectora: number[];
 
-    cars = [
-        { id: 1, name: 'Volvo' },
-        { id: 2, name: 'Saab' },
-        { id: 3, name: 'Opel' },
-        { id: 4, name: 'Audi' },
-    ];
+  parametrosForm: FormGroup;
 
-  parametrosForm: FormGroup;  
+  tiempoEsperaTooltip = ""
 
   private unsubscribe = new Subject<void>();
 
-  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal, 
+  constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal,
     private formBuilder: FormBuilder) {
 
-      this.parametrosForm = new FormGroup({
-        monorracion: new FormControl(),
-        selectora: new FormControl(),
-        silo:new FormControl(),
-        tiempoSoplado: new FormControl(),
-        tiempoEspera: new FormControl(),
-        hzSoplador:new FormControl(),
-        tasa: new FormControl(),
-        factorActividad: new FormControl(),
-      });
+    this.parametrosForm = new FormGroup({
+      monorracion: new FormControl(),
+      posicionSelectora: new FormControl(),
+      silo: new FormControl(),
+      tiempoSoplado: new FormControl(),
+      tiempoEspera: new FormControl(),
+      hzSoplador: new FormControl(),
+      tasa: new FormControl(),
+      factorActividad: new FormControl(),
+    });
 
   }
 
   ngOnInit(): void {
-    registerLocaleData( es );
+    registerLocaleData(es);
+
 
     this.parametrosForm = this.formBuilder.group({
-      monorracion: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
-      selectora: ['', [Validators.required]],
+      monorracion: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
+      posicionSelectora: ['', [Validators.required]],
       silo: ['', [Validators.required]],
-      tiempoSoplado: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
-      tiempoEspera: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(4)]],
-      hzSoplador: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
-      tasa: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
-      factorActividad: ['', [Validators.pattern('^[0-9]*$'),Validators.required,Validators.maxLength(2)]],
+      tiempoSoplado: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
+      tiempoEspera: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
+      hzSoplador: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
+      tasa: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
+      factorActividad: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
     });
 
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
@@ -131,10 +120,10 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       for (let i = 0; i < socketArray.length; i++) {
         if (JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])) {
           thisArray[i] = socketArray[i];
-          if(isJaula){
-            if(thisArray[i].ID === this.jaulaPopUp.ID && this.jaulaPopUp){
+          if (isJaula) {
+            if (thisArray[i].ID === this.jaulaPopUp.ID && this.jaulaPopUp) {
               console.log("Im HEre");
-              
+
               this.jaulaPopUp = thisArray[i];
               this.updateJaulaPopup(this.jaulaPopUp)
             }
@@ -200,17 +189,21 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.updateJaulaPopup(this.jaulaPopUp)
 
     let dosificadores = this.dosificadores.filter(doser => doser.IDLINEA === this.jaulaPopUp.IDLINEA).map(a => a.ID);
-    this.silosPopUp = this.silos.filter((({ID}) => dosificadores.includes(ID)));
-    
-    this.modalService.open(scrollDataModal, {size: 'lg', scrollable: true, centered: true });
+    this.silosPopUp = this.silos.filter((({ ID }) => dosificadores.includes(ID)));
+
+    this.modalService.open(scrollDataModal, { size: 'lg', scrollable: true, centered: true });
   }
 
-  updateJaulaPopup(jaula: Jaula){
-    this.soplado = jaula.TIEMPOSOPLADO
+  updateJaulaPopup(jaula: Jaula) {
+    let selectora = this.selectoras.find(s => s.ID === jaula.IDSELECTORA)
+    this.salidasSelectora = Array.from({ length: selectora.SALIDAS }, (_, i) => i + 1)
+
+    console.log(this.salidasSelectora);
+
 
     this.parametrosForm.setValue({
-      monorracion: jaula.MONORRACION, 
-      selectora: jaula.IDSELECTORA,
+      monorracion: jaula.MONORRACION,
+      posicionSelectora: jaula.POSICIONSELECTORA,
       silo: jaula.IDDOSIFICADOR,
       tiempoSoplado: jaula.TIEMPOSOPLADO,
       tiempoEspera: jaula.TIEMPOESPERA,
@@ -218,8 +211,28 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       tasa: jaula.TASA,
       factorActividad: jaula.FACTORACTIVIDAD,
     });
+
+    this.disableTiempoEspera(jaula.IDLINEA)
   }
 
+  setParametros() {
+    let idlinea = this.lineas.find(x => x.ID === this.jaulaPopUp.IDLINEA).ID;    
+    let doserId = this.dosificadores.find(d => d.IDSILO === this.parametrosForm.value.silo && d.IDLINEA ===idlinea).ID;
+
+    let parametrosJaula = {
+      monorracion: this.parametrosForm.value.monorracion,
+      posicionSelectora: this.parametrosForm.value.posicionSelectora,
+      tiempoSoplado: this.parametrosForm.value.tiempoSoplado,
+      tiempoEspera: this.parametrosForm.value.tiempoEspera,
+      hzSoplador: this.parametrosForm.value.hzSoplador,
+      tasa: this.parametrosForm.value.tasa,
+      factorActividad: this.parametrosForm.value.factorActividad,
+      iddosificador: doserId
+    }
+
+    this.alimentarService.setParametros(this.jaulaPopUp.ID, parametrosJaula).subscribe(() => { });
+
+  }
 
   desactivar(idJaula: number) {
     let jaula = this.jaulas.find(x => x.ID === idJaula)
@@ -442,10 +455,29 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       if (jaulas[index].HABILITADA) {
         disableTooltip = false;
         break;
-      }      
+      }
     }
 
     return disableTooltip;
+
+  }
+
+  disableTiempoEspera(idLinea) {
+    let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLinea);
+    this.parametrosForm.controls.tiempoEspera.disable();
+    this.tiempoEsperaTooltip = "No hay Jaulas Deshabilitadas"
+    
+
+    for (let index = 0; index < jaulas.length; index++) {
+      if (!jaulas[index].HABILITADA) {
+        this.parametrosForm.controls.tiempoEspera.enable();
+        this.tiempoEsperaTooltip = ""
+        
+        break;
+      }
+    }
+
+    
 
   }
 

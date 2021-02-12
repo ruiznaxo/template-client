@@ -52,6 +52,14 @@ export class AlimentarService {
     return this.http.get(this.baseUrl + "selectora")
   }
 
+  setParametros(idJaula: number, parametros: any){
+    let body = {
+      id: idJaula,
+      parametros: parametros
+    }
+    return this.http.patch(this.baseUrl + "jaula/parametros/" + idJaula, body )
+  }
+
   updateTasaJaula(idJaula: number, valorTasa: number){
     this.http.patch(this.baseUrl + "jaula/" + idJaula, {tasa: valorTasa})
   }

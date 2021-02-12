@@ -15,6 +15,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { NumberPickerModule } from 'ng-number-picker';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 @NgModule({
   declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe, ButtonComponent, PopupComponent],
@@ -26,7 +27,8 @@ import { NumberPickerModule } from 'ng-number-picker';
     NgbTooltipModule,
     NgSelectModule,
     FormsModule,
-    NumberPickerModule
+    NumberPickerModule,
+    PerfectScrollbarModule
   ],
   exports:[
     NgxSliderModule,
@@ -37,7 +39,8 @@ import { NumberPickerModule } from 'ng-number-picker';
     PopupComponent,
     NgSelectModule,
     FormsModule,
-    NumberPickerModule
+    NumberPickerModule,
+    PerfectScrollbarModule
   ]
 })
 

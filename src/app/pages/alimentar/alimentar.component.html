@@ -228,16 +228,6 @@
                                                 <i class="bx bx-x" *ngIf="!jaula.HABILITADA"></i>
                                                 <i class="bx bx-check " *ngIf="jaula.HABILITADA"></i>
                                             </button>
-
-                                            <!-- <div
-                                                class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
-                                                <input [disabled]="linea.ESTADO == 3" type="checkbox"
-                                                    class="custom-control-input" id="{{ 'check' + jaula.ID }}"
-                                                    [checked]="jaula.HABILITADA" [(ngModel)]="jaula.HABILITADA"
-                                                    (ngModelChange)="logCheck(jaula.ID)">
-                                                <label class="custom-control-label"
-                                                    for="{{ 'check' + jaula.ID }}"></label>
-                                            </div> -->
                                         </li>
 
                                     </ul>
@@ -288,15 +278,6 @@
                                             <h5 class="font-size-28 pt-2 col-4">TASA </h5>
                                             <div class="col-8">
                                                 <div class="form-group">
-                                                    <!-- <select [(ngModel)]="selectedFormula"
-                                                        (ngModelChange)="cambioFormula()" id="formrow-inputState"
-                                                        class="form-control">
-                                                        <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
-                                                            {{ item.formula }}
-                                                        </option>
-                                                    </select> -->
-                                                    <!-- <ng-select [items]="tasaSelect" [(ngModel)]="selectedFormula">
-                                                    </ng-select> -->
                                                     <ng-select [items]="tasaSelect" bindLabel="formula" bindValue="id"
                                                         [(ngModel)]="selectedFormula" (ngModelChange)="cambioFormula()"
                                                         [clearable]="false">
@@ -370,33 +351,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="formrow-email-input">Monorración</label>
-                                        <input type="number" class="form-control" formControlName="monorracion">
+                                        <input type="number" class="form-control" min="0" formControlName="monorracion">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- <div class="form-group">
-                                        <label for="formrow-password-input">Tiempo de Soplado</label>
-                                        <input type="password" class="form-control" formControlName="tiempoSoplado" />
-                                    </div> -->
                                     <div class="form-group">
                                         <label>Tiempo de Soplado</label>
-                                        <ng-number-picker
-                                            [(value)]="soplado"
-                                            [min]="'0'"
-                                            [max]="'60'"
-                                            [step]="'1'"
-                                            [pickStartAfter]="'500'"
-                                            [pickTimer]="'100'"
-                                            [buttonsOrientation]="'h'"
-                                            [size]="'small'"
-                                            [showDownButton]="true"
-                                            [showUpButton]="true"
-                                            [inputReadOnly]="false"
-                                            [mouseWheel]="true"
-                                            [arrowKeys]="true"
-                                            [placeholder]="'How much'"
-                                            [customClass]="{'container': '', 'up': 'btn btn-primary', 'down': '', 'prefix': '', 'postfix': ''}"                                        
-                                        ></ng-number-picker>
+                                        <input type="number" class="form-control" min="0"
+                                            formControlName="tiempoSoplado">
                                     </div>
                                 </div>
                             </div>
@@ -404,8 +366,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Salida Selectora</label>
-                                        <ng-select [items]="cars" bindLabel="name" bindValue="id"
-                                            formControlName="selectora" [clearable]="false">
+                                        <ng-select formControlName="posicionSelectora" [clearable]="false">
+                                            <ng-option *ngFor="let salida of salidasSelectora" [value]="salida">
+                                                {{salida}}</ng-option>
                                         </ng-select>
                                     </div>
                                 </div>
@@ -419,20 +382,23 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6" [ngbTooltip]="tiempoEsperaTooltip">
                                     <div class="form-group">
                                         <label for="formrow-email-input">Tiempo de Espera</label>
-                                        <input type="email" class="form-control" formControlName="tiempoEspera">
+                                        <input type="number" class="form-control" min="0"
+                                            formControlName="tiempoEspera">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="formrow-password-input">Hz Soplador</label>
-                                        <input type="password" class="form-control" formControlName="hzSoplador" />
+
+                                        <ngx-slider formControlName="hzSoplador" [options]="hzpausaOptions"
+                                            >
+                                        </ngx-slider>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-6" *ngIf="tasaOptions && jaulaPopUp">
                                     <div class="p-3">
@@ -440,22 +406,10 @@
                                             <h5 class="font-size-28 pt-2 col-4">TASA </h5>
                                             <div class="col-8">
                                                 <div class="form-group">
-                                                    <!-- <select [(ngModel)]="selectedFormula"
-                                                        (ngModelChange)="cambioFormula()" id="formrow-inputState"
-                                                        class="form-control">
-                                                        <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
-                                                            {{ item.formula }}
-                                                        </option>
-                                                    </select> -->
-                                                    <!-- <label>Selectora</label> -->
-                                                    <!-- <ng-select [items]="tasaSelect" bindLabel="formula" bindValue="id"
-                                                        [(ngModel)]="selectedFormula">
-                                                    </ng-select> -->
-                                                    <!-- <ng-select [(ngModel)]="selectedFormula">
-                                                        <ng-option *ngFor="let item of tasaSelect" [value]="item.id">{{item.formula}}</ng-option>
-                                                     </ng-select> -->
                                                     <ng-select [items]="tasaSelect" bindLabel="formula" bindValue="id"
-                                                        [clearable]="false">
+                                                        [clearable]="false" [(ngModel)]="selectedFormula"
+                                                        (ngModelChange)="cambioFormula()"
+                                                        [ngModelOptions]="{standalone: true}">
                                                     </ng-select>
                                                 </div>
                                             </div>
@@ -500,7 +454,9 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Cerrar</button>
-        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+        <app-button [text]="'Cancelar'" [typeButton]="'btn-secondary'" (clickButton)="modal.close('Close click')">
+        </app-button>
+        <app-button [text]="'Guardar Cambios'" [typeButton]="'btn-primary'" (clickButton)="setParametros()"
+            [disable]="parametrosForm.invalid" [tooltipDisable]="'Debe Ingresar los datos correctamente'"></app-button>
     </div>
 </ng-template>

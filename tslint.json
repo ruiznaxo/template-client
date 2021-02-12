@@ -29,6 +29,7 @@
       "app",
       "kebab-case"
     ],
+    "noUnusedLocals": true, 
     "eofline": true,
     "import-blacklist": [
       true,

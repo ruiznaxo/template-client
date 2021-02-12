@@ -64,7 +64,7 @@
     "ngx-mask": "^11.0.1",
     "ngx-owl-carousel-o": "^4.0.0",
     "ngx-perfect-scrollbar": "^10.0.1",
-    "ngx-scrollbar": "^7.4.1",
+    "ngx-scrollbar": "^7.5.4",
     "ngx-socket-io": "^3.2.0",
     "ngx-ui-switch": "^10.0.2",
     "rxjs": "~6.6.3",
