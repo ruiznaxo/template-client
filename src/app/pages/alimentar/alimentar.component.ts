@@ -46,23 +46,40 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   //Lista de Silos para popup
   silosPopUp: Silo[];
 
-  //
-  tasaOptions: { idJaula: number, options: Options }[] = [];
-
-  //Opciones para slider de HZ
-  hzpausaOptions: Options = {
+  //opciones slider tasa en popup
+  opcionesTasa: Options = {
     ceil: 50,
     floor: 0,
     step: 1
   }
 
+  //opciones slider FACTOR ACTIVIDAD en popup
+  opcionesFactor: Options = {
+    ceil: 200,
+    floor: 50,
+    step: 1
+  }
+
+  //Opciones para slider de HZ
+  hzpausaOptions: Options = {
+    ceil: 50,
+    floor: 0,
+    step: 1,
+    ariaLabel: "%"
+  }
+
+  tasaEnGramos: number;
+
   //Array para elegir la salida de la selectora
   salidasSelectora: number[];
 
+  //Formulario que contiene los valores de los parametros por jaula
   parametrosForm: FormGroup;
 
+  //tooltip para cuando el tiempo de espera está desactivado
   tiempoEsperaTooltip = ""
 
+  //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
   constructor(public alimentarService: AlimentarService, public wsService: WebsocketService, public modalService: NgbModal,
@@ -84,7 +101,6 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     registerLocaleData(es);
 
-
     this.parametrosForm = this.formBuilder.group({
       monorracion: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
       posicionSelectora: ['', [Validators.required]],
@@ -92,38 +108,38 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       tiempoSoplado: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
       tiempoEspera: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(4)]],
       hzSoplador: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
-      tasa: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
-      factorActividad: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(2)]],
+      tasa: ['', [Validators.required]],
+      factorActividad: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(3)]],
     });
 
     this.breadCrumbItems = [{ label: 'Dashboard' }, { label: 'Alimentar', active: true }];
 
+    //Peticiones HTTP cuando se inicia el componente
     this.loadData();
 
+    //Escuchas de Sockets
     this.wsService.listen("all-lineas").subscribe((data: Linea[]) => {
-      this.checkChanges(this.lineas, data)
+      this.checkSocketChanges(this.lineas, data)
     })
     this.wsService.listen("all-jaulas").subscribe((data: Jaula[]) => {
-      this.checkChanges(this.jaulas, data, true)
+      this.checkSocketChanges(this.jaulas, data, true)
     })
     this.wsService.listen("all-alimentaciones").subscribe((data: Alimentacion[]) => {
-      this.checkChanges(this.alimentaciones, data)
+      this.checkSocketChanges(this.alimentaciones, data)
     })
     this.wsService.listen("all-alarmas").subscribe((data: Alarma[]) => {
-      this.checkChanges(this.alarmas, data)
+      this.checkSocketChanges(this.alarmas, data)
     })
   }
 
-
-  checkChanges(thisArray: any[], socketArray: any[], isJaula?: boolean) {
+  //Comprueba si lo que viene de los sockets es distinto a lo que tiene la clase
+  checkSocketChanges(thisArray: any[], socketArray: any[], isJaula?: boolean) {
     if (thisArray && socketArray) {
       for (let i = 0; i < socketArray.length; i++) {
         if (JSON.stringify(socketArray[i]) !== JSON.stringify(thisArray[i])) {
           thisArray[i] = socketArray[i];
-          if (isJaula) {
+          if (isJaula && this.jaulaPopUp) {
             if (thisArray[i].ID === this.jaulaPopUp.ID && this.jaulaPopUp) {
-              console.log("Im HEre");
-
               this.jaulaPopUp = thisArray[i];
               this.updateJaulaPopup(this.jaulaPopUp)
             }
@@ -133,7 +149,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  //llama las peticiones http y asigna los datos 
   loadData() {
     let listaPeticionesHttp = [
       this.alimentarService.getLineas(),
@@ -150,8 +166,6 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
       .subscribe(([lineas, jaulas, programaciones, alimentaciones, dosificadores, silos, alarmas, tipoAlarmas, selectoras]) => {
-        //console.log(lineas);
-
         this.lineas = lineas;
         this.jaulas = jaulas
         this.alimentaciones = alimentaciones;
@@ -162,44 +176,46 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         this.tipoAlarmas = tipoAlarmas;
         this.selectoras = selectoras;
 
-        if (this.jaulas && this.dosificadores) {
-          this.setOptions(this.jaulas, this.dosificadores)
-        }
+        console.log(this.programaciones);
+        
 
       });
 
   }
 
+  //para cerrar las subscripciones
   ngOnDestroy() {
     //cancelar suscripciones
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
 
+  //cambia la formula seleccionada para la tasa
   cambioFormula() {
     if (this.jaulas && this.dosificadores) {
-      this.setOptions(this.jaulas, this.dosificadores);
+      this.setTasaOptions();      
+      this.setTasa({value: this.getTasaVisible(this.jaulaPopUp.ID)}, this.jaulaPopUp.ID)
     }
   }
 
-
+  //abre el popup
   showPopup(scrollDataModal: any, idJaula) {
     this.jaulaPopUp = this.jaulas.find(jaula => jaula.ID === idJaula)
 
     this.updateJaulaPopup(this.jaulaPopUp)
+    this.setTasaOptions();
 
     let dosificadores = this.dosificadores.filter(doser => doser.IDLINEA === this.jaulaPopUp.IDLINEA).map(a => a.ID);
     this.silosPopUp = this.silos.filter((({ ID }) => dosificadores.includes(ID)));
 
     this.modalService.open(scrollDataModal, { size: 'lg', scrollable: true, centered: true });
+
   }
 
+  //asigna los datos de los parametros segun la jaula (popup)
   updateJaulaPopup(jaula: Jaula) {
     let selectora = this.selectoras.find(s => s.ID === jaula.IDSELECTORA)
     this.salidasSelectora = Array.from({ length: selectora.SALIDAS }, (_, i) => i + 1)
-
-    console.log(this.salidasSelectora);
-
 
     this.parametrosForm.setValue({
       monorracion: jaula.MONORRACION,
@@ -208,13 +224,15 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       tiempoSoplado: jaula.TIEMPOSOPLADO,
       tiempoEspera: jaula.TIEMPOESPERA,
       hzSoplador: jaula.HZSOPLADOR,
-      tasa: jaula.TASA,
+      tasa: this.getTasaVisible(jaula.ID),
       factorActividad: jaula.FACTORACTIVIDAD,
     });
 
+    this.setTasa({value: this.getTasaVisible(this.jaulaPopUp.ID)}, this.jaulaPopUp.ID)
     this.disableTiempoEspera(jaula.IDLINEA)
   }
 
+  //update de parametros en servidor de acuerdo al popup
   setParametros() {
     let idlinea = this.lineas.find(x => x.ID === this.jaulaPopUp.IDLINEA).ID;    
     let doserId = this.dosificadores.find(d => d.IDSILO === this.parametrosForm.value.silo && d.IDLINEA ===idlinea).ID;
@@ -225,49 +243,18 @@ export class AlimentarComponent implements OnInit, OnDestroy {
       tiempoSoplado: this.parametrosForm.value.tiempoSoplado,
       tiempoEspera: this.parametrosForm.value.tiempoEspera,
       hzSoplador: this.parametrosForm.value.hzSoplador,
-      tasa: this.parametrosForm.value.tasa,
+      tasa: this.tasaEnGramos,
       factorActividad: this.parametrosForm.value.factorActividad,
       iddosificador: doserId
     }
 
-    this.alimentarService.setParametros(this.jaulaPopUp.ID, parametrosJaula).subscribe(() => { });
+    this.alimentarService.setParametros(this.jaulaPopUp.ID, parametrosJaula).subscribe(() => {
+      this.modalService.dismissAll();
+    });
 
   }
 
-  desactivar(idJaula: number) {
-    let jaula = this.jaulas.find(x => x.ID === idJaula)
-    jaula.estado = 4;
-    this.jaulas.find(x => x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
-
-    //peticion patch
-  }
-
-  activar(idJaula: number) {
-    let jaula = this.jaulas.find(x => x.ID === idJaula)
-    jaula.estado = 0;
-    this.jaulas.find(x => x.ID === idJaula).claseEstado = this.setClaseEstado(jaula.estado)
-
-    //peticion patch
-  }
-
-  setClaseEstado(estado: number): string {
-    switch (estado) {
-      case 0:
-        return "btn btn-primary"
-      case 1:
-        return "btn btn-success"
-      case 2:
-        return "btn btn-info"
-      case 3:
-        return "btn btn-danger"
-      case 4:
-        return "btn btn-secondary"
-      default:
-        return "btn btn-primary";
-    }
-  }
-
-
+  //obtiene el valor del slider, de acuerdo con la formula seleccionada
   getTasaVisible(idJaula: number): number {
 
     let jaula = this.jaulas.find(x => x.ID === idJaula)
@@ -279,7 +266,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     switch (this.selectedFormula) {
       case 1:
         //Kg / min
-        return Math.round(jaula.TASA * 0.06)
+        return Number(jaula.TASA * 0.06)
       case 2:
         //Get Pellet kilo de silo        
         return Number((jaula.TASA * 0.06 * pelletKilo / jaula.CANTIDADPECES))
@@ -292,9 +279,8 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  //de acurdo a la formula seleccioanda asigna la tasa en gramos
   setTasa(event, idJaula) {
-
     let jaula = this.jaulas.find(x => x.ID === idJaula)
     let doser = this.dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR)
     let silo = this.silos.find(x => x.ID === doser.IDSILO);
@@ -302,13 +288,13 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
     let tasaJaula = 0;
 
-    // switch (this.selectedFormula.id) {
     switch (this.selectedFormula) {
       case 1:
         tasaJaula = event.value / 0.06
         console.log("KGM", tasaJaula);
         break;
       case 2:
+        console.log(event.value);        
         tasaJaula = event.value / 0.06 / pelletKilo * jaula.CANTIDADPECES
         console.log("PPM", tasaJaula);
         break;
@@ -322,63 +308,48 @@ export class AlimentarComponent implements OnInit, OnDestroy {
         break;
     }
 
+
+    this.tasaEnGramos = tasaJaula;
+
   }
 
-  setOptions(jaulas: Jaula[], dosificadores: Dosificador[]) {
-    if (jaulas && dosificadores) {
-      jaulas.forEach(jaula => {
-        let tasamax = 0;
-        let step = 1;
+  //De acuerdo a la formula seleccionada asigna las opciones del slider
+  setTasaOptions(){
+    let tasamax = 0;
+    let step = 1;
+    let jaula = this.jaulaPopUp;
+    let doser = this.dosificadores.find(d => d.ID === jaula.IDDOSIFICADOR)
 
-        // switch (this.selectedFormula.id) {
-        switch (this.selectedFormula) {
-          case 1:
-            //Kg / min
-            tasamax = Math.round(dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX * 0.06)
-            step = 1
-            break;
-          case 2:
-            //Get Pellet kilo de silo
-            let doser = dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR)
-            let silo = this.silos.find(x => x.ID === doser.IDSILO);
-            let pelletKilo = silo.PELLETKILO
-            tasamax = Number((doser.TASAMAX * 0.06 * pelletKilo / jaula.CANTIDADPECES))
-            step = 0.01
-            break;
-          case 3:
-            //Tonelada
-            let biomasa = (jaula.CANTIDADPECES * (jaula.PESOPROMEDIO / 1000)) / 1000
-            tasamax = Number((dosificadores.find(doser => doser.ID === jaula.IDDOSIFICADOR).TASAMAX * 0.06 / biomasa))
-            step = 0.001
-            break;
-          default:
-            tasamax = 0
-            break;
-        }
+    switch (this.selectedFormula) {
+      case 1:
+        //Kg / min
+        tasamax = Number(doser.TASAMAX * 0.06)
+        step = 1
+        break;
+      case 2:
+        //Get Pellet kilo de silo
+        let silo = this.silos.find(x => x.ID === doser.IDSILO);
+        let pelletKilo = silo.PELLETKILO
+        tasamax = Number((doser.TASAMAX * 0.06 * pelletKilo / jaula.CANTIDADPECES))
+        step = 0.01
+        break;
+      case 3:
+        //Tonelada
+        let biomasa = (jaula.CANTIDADPECES * (jaula.PESOPROMEDIO / 1000)) / 1000
+        tasamax = Number(doser.TASAMAX * 0.06 / biomasa)
+        step = 0.001
+        break;
+      default:
+        tasamax = 0
+        break;
+    } 
 
-        //console.log(tasamax);      
-
-        if (this.tasaOptions.find(x => x.idJaula === jaula.ID)) {
-          this.tasaOptions.find(x => x.idJaula === jaula.ID).options = {
-            floor: 0,
-            ceil: tasamax,
-            step: step
-          }
-        } else {
-          this.tasaOptions.push({
-            idJaula: jaula.ID, options: {
-              floor: 0,
-              ceil: tasamax,
-              step: step
-            }
-          });
-        }
-      });
+    this.opcionesTasa = {
+      floor: 0,
+      ceil: tasamax,
+      step: step
     }
-  }
 
-  getOptions(idJaula: number) {
-    return this.tasaOptions.find(x => x.idJaula === idJaula).options;
   }
 
   getNombreTipoAlarma(idTipoAlarma) {
@@ -393,6 +364,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.alimentarService.updateEstadoLinea(idLinea, estado).subscribe(() => { })
   }
 
+  //Color de la Linea segun estado
   getBorderCard(tipoEstado: number, alarma: number) {
 
     let style;
@@ -422,20 +394,15 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     this.alimentarService.updateHzPausa(idlinea, event.value).subscribe(() => { })
   }
 
-  logCheck(idJula: number) {
-    let jaula = this.jaulas.find(x => x.ID === idJula);
-    this.alimentarService.setJaulaHabilitada(idJula, jaula.HABILITADA).subscribe();
-  }
-
-  cambiarHabilitada(idJula: number) {
-    let jaula = this.jaulas.find(x => x.ID === idJula);
+  cambiarHabilitada(idJaula: number) {
+    let jaula = this.jaulas.find(x => x.ID === idJaula);
     let value = !jaula.HABILITADA
-    this.alimentarService.setJaulaHabilitada(idJula, value).subscribe();
+    this.alimentarService.setJaulaHabilitada(idJaula, value).subscribe();
   }
 
+  //Si no hay jaulas habilitadas muestra el mensaje en tooltip
   getIniciarTooltip(idLInea): string {
     let linea = this.lineas.find(linea => linea.ID == idLInea);
-    let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLInea);
 
     if (linea.ESTADO === 3 || linea.ALARMA) {
       return "";
@@ -447,6 +414,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   }
 
+  //Verifica si existe por lo menos una jaula habilitada
   jaulasHabilitadas(idLinea): boolean {
     let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLinea);
     let disableTooltip = true;
@@ -462,6 +430,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
 
   }
 
+  //verifica si todas las jaulas estan desabilitadas
   disableTiempoEspera(idLinea) {
     let jaulas = this.jaulas.filter(jaulas => jaulas.IDLINEA === idLinea);
     this.parametrosForm.controls.tiempoEspera.disable();

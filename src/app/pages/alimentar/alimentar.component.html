@@ -72,133 +72,7 @@
             </div>
         </div>
 
-
-
-        <!-- <div class="col-xl-4">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-5">Jaulas</h4>
-                    <ul ngbNav #nav="ngbNav" class="nav-pills bg-light rounded">
-                        <li *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i" ngbDropdown
-                            [ngbNavItem]="i">
-
-                            <div class="btn-group mr-1 mt-2" ngbDropdown>
-                                <button (click)="nav.select(i)" type="button"
-                                    [class]="jaula.claseEstado">{{jaula.NOMBRE}}</button>
-                                <button type="button" [class]="jaula.claseEstado"
-                                    class="dropdown-toggle dropdown-toggle-split" ngbDropdownToggle>
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </button>
-                                <div class="dropdown-menu" ngbDropdownMenu>
-                                    <button class="dropdown-item"
-                                        (click)="scrollModal(scrollDataModal)">Parametros</button>
-                                    <div class="dropdown-divider"></div>
-
-                                    <a *ngIf="jaula.estado != 4; else desactivadoTemplate" class="dropdown-item"
-                                        (click)="desactivar(jaula.id)">Desactivar</a>
-                                    <ng-template #desactivadoTemplate><a class="dropdown-item"
-                                            (click)="activar(jaula.id)">Activar</a>
-                                    </ng-template>
-                                </div>
-                            </div>
-                            <ng-template ngbNavContent>
-                                <p>Selectora: {{jaula.NOMBRE}}</p>
-
-                                <div class="row">
-                                    <div class="col-md-6" *ngIf="tasaOptions">
-                                        <div class="p-3">
-                                            <div class="row">
-                                                <h5 class="font-size-28 pt-2 col-4">TASA </h5>
-                                                <div class="col-8">
-                                                    <div class="form-group">
-                                                        <select [(ngModel)]="selectedFormula"
-                                                            (ngModelChange)="cambioFormula()" id="formrow-inputState"
-                                                            class="form-control">
-                                                            <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
-                                                                {{ item.formula }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <ngx-slider [value]="getTasaVisible(jaula.ID)"
-                                                [options]="getOptions(jaula.ID)"
-                                                (userChangeEnd)="setTasa($event, jaula.ID)">
-                                            </ngx-slider>
-                                        </div>
-
-
-
-                                    </div>
-
-                                    <ng-container
-                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyJaula : jaula.ID">
-                                        VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
-                                        TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
-                                        OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
-                                        ENTREGADOVISITA: {{alimentacion.ENTREGADOVISITA}}
-                                        TOTALENTREGADO: {{alimentacion.TOTALENTREGADO}}
-                                        OBJETIVOTOTAL: {{alimentacion.OBJETIVOTOTAL}}
-                                        HZDOSER: {{alimentacion.HZDOSER}}
-                                        VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
-                                        FINALIZADA: {{alimentacion.FINALIZADA}}
-                                        ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
-                                    </ng-container>
-                                </div>
-
-
-                            </ng-template>
-
-                        </li>
-
-                    </ul>
-
-                    <div [ngbNavOutlet]="nav" class="mt-2"></div>
-
-                </div>
-            </div>
-        </div> -->
-
-
-        <!-- Inicio Jaulas Por Linea -->
-        <!-- <div class="col-xl-5">
-            <div class="row">
-                <div class="col-xl-6" *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i">
-                    <div class="card">
-                        <div class="card-body">
-                                <h4 class="card-title mb-4 float-sm-left">{{ jaula.NOMBRE }}</h4>
-                                <div class="float-sm-right">
-                                    <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-primary mb-3">
-                                        <input [disabled]="linea.ESTADO == 3" type="checkbox"
-                                            class="custom-control-input" id="{{ 'check' + jaula.ID }}"
-                                            [checked]="jaula.HABILITADA" [(ngModel)]="jaula.HABILITADA"
-                                            (ngModelChange)="logCheck(jaula.ID)">
-                                        <label class="custom-control-label" for="{{ 'check' + jaula.ID }}"></label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    
-                                    <ng-container
-                                        *ngFor="let alimentacion of alimentaciones | alimentacionFilterbyJaula : jaula.ID">
-                                        VISITAACTUAL: {{alimentacion.VISITAACTUAL}}
-                                        TOTALVISITAS: {{alimentacion.TOTALVISITAS}}
-                                        OBJETIVOVISITA: {{alimentacion.OBJETIVOVISITA}}
-                                        ENTREGADOVISITA: {{alimentacion.ENTREGADOVISITA}}
-                                        TOTALENTREGADO: {{alimentacion.TOTALENTREGADO}}
-                                        OBJETIVOTOTAL: {{alimentacion.OBJETIVOTOTAL}}
-                                        HZDOSER: {{alimentacion.HZDOSER}}
-                                        VISITASCOMPLETADAS: {{alimentacion.VISITASCOMPLETADAS}}
-                                        FINALIZADA: {{alimentacion.FINALIZADA}}
-                                        ESTADOALIMENTACION: {{alimentacion.ESTADOALIMENTACION}}
-                                    </ng-container>
-                                </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
+        <!-- Inicio Jaulas por Linea -->
         <div class="col-xl-6">
             <div class="row">
                 <div class="col-xl-6" *ngFor="let jaula of jaulas | jaulaFilterbyLinea:linea.ID ; index as i">
@@ -270,30 +144,6 @@
                                 </div>
                             </div>
 
-
-                            <div class="row">
-                                <div class="col-md-8" *ngIf="tasaOptions">
-                                    <div class="p-3">
-                                        <div class="row">
-                                            <h5 class="font-size-28 pt-2 col-4">TASA </h5>
-                                            <div class="col-8">
-                                                <div class="form-group">
-                                                    <ng-select [items]="tasaSelect" bindLabel="formula" bindValue="id"
-                                                        [(ngModel)]="selectedFormula" (ngModelChange)="cambioFormula()"
-                                                        [clearable]="false">
-                                                    </ng-select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ngx-slider [value]="getTasaVisible(jaula.ID)" [options]="getOptions(jaula.ID)"
-                                            (userChangeEnd)="setTasa($event, jaula.ID)">
-                                        </ngx-slider>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
                         </div>
 
                         <div class="card-footer bg-transparent border-top text-center">
@@ -348,12 +198,14 @@
                     <div class="card-body">
                         <form [formGroup]="parametrosForm">
                             <div class="row">
+                                <!-- Monorracióm -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="formrow-email-input">Monorración</label>
+                                        <label for="formrow-email-input">Monorración (Kg)</label>
                                         <input type="number" class="form-control" min="0" formControlName="monorracion">
                                     </div>
                                 </div>
+                                <!-- Tiempo de Soplado -->
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tiempo de Soplado</label>
@@ -363,6 +215,7 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <!-- Salida de Selectora -->
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Salida Selectora</label>
@@ -372,6 +225,7 @@
                                         </ng-select>
                                     </div>
                                 </div>
+                                <!-- Selección de Silo -->
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Silo</label>
@@ -382,6 +236,7 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <!-- Tiempo de Espera -->
                                 <div class="col-md-6" [ngbTooltip]="tiempoEsperaTooltip">
                                     <div class="form-group">
                                         <label for="formrow-email-input">Tiempo de Espera</label>
@@ -390,6 +245,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <!-- HZ Soplador -->
                                     <div class="form-group">
                                         <label for="formrow-password-input">Hz Soplador</label>
 
@@ -400,7 +256,8 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6" *ngIf="tasaOptions && jaulaPopUp">
+                                <div class="col-md-6" *ngIf="jaulaPopUp">
+                                    <!-- Tasa -->
                                     <div class="p-3">
                                         <div class="row">
                                             <h5 class="font-size-28 pt-2 col-4">TASA </h5>
@@ -415,34 +272,25 @@
                                             </div>
                                         </div>
                                         <ngx-slider [value]="getTasaVisible(jaulaPopUp.ID)"
-                                            [options]="getOptions(jaulaPopUp.ID)"
+                                            [options]="opcionesTasa"
                                             (userChangeEnd)="setTasa($event, jaulaPopUp.ID)" formControlName="tasa">
                                         </ngx-slider>
                                     </div>
                                 </div>
 
-                                <!-- <div class="col-md-6" *ngIf="tasaOptions && jaulaPopUp">
+                                <div class="col-md-6" *ngIf="jaulaPopUp">
+                                    <!-- Tasa -->
                                     <div class="p-3">
                                         <div class="row">
-                                            <h5 class="font-size-28 pt-2 col-4">TASA </h5>
-                                            <div class="col-8">
-                                                <div class="form-group">
-                                                    <select [(ngModel)]="selectedFormula"
-                                                        (ngModelChange)="cambioFormula()" id="formrow-inputState"
-                                                        class="form-control">
-                                                        <option *ngFor="let item of tasaSelect" [ngValue]="item.id">
-                                                            {{ item.formula }}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <h5 class="font-size-28 pt-2 col-12">FACTOR ACTIVIDAD</h5>                                            
                                         </div>
-                                        <ngx-slider [value]="getTasaVisible(jaulaPopUp.ID)"
-                                            [options]="getOptions(jaulaPopUp.ID)"
-                                            (userChangeEnd)="setTasa($event, jaulaPopUp.ID)">
+                                        <ngx-slider style="margin-top: 53px" [value]="jaulaPopUp.FACTORACTIVIDAD"
+                                            [options]="opcionesFactor" formControlName="factorActividad">
                                         </ngx-slider>
                                     </div>
-                                </div> -->
+                                </div>
+
+                               
                             </div>
                         </form>
                     </div>
