@@ -42,16 +42,35 @@ export const MENU: MenuItem[] = [
         ]
     },
     {
-        id: 8,
+        id: 7,
         label: 'Alimentar',
         isTitle: true
     },
     {
-        id: 9,
+        id: 8,
         label: 'Alimentar',
         icon: 'bx-message-square-detail',
         link: '/alimentar',
     },
+    {
+        id: 9,
+        label: 'Admin',
+        isTitle: true
+    },
+    {
+        id: 10,
+        label: 'Administración',
+        icon: 'bx-share-alt',
+        subItems: [
+            {
+                id: 11,
+                label: 'Programación',
+                link: '/admin/programacion',
+                parentId: 10
+            }
+        ]
+    },
+
     {
         id: 8,
         label: 'MENUITEMS.APPS.TEXT',

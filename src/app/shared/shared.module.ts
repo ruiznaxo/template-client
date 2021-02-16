@@ -11,14 +11,15 @@ import { JaulaFilterbyLineaPipe } from './pipes/jaula-filterby-linea.pipe';
 import { AlarmaFilterbyLineaPipe } from './pipes/alarmas-filterby-linea.pipe';
 import { ButtonComponent } from './components/button/button.component';
 import { PopupComponent } from './components/popup/popup.component';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { TableComponent } from './components/table/table.component';
+import { NgbCollapseModule, NgbDropdownModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { NumberPickerModule } from 'ng-number-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 @NgModule({
-  declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe, ButtonComponent, PopupComponent],
+  declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe, ButtonComponent, PopupComponent, TableComponent],
   imports: [
     CommonModule,
     UIModule,
@@ -28,7 +29,11 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     NgSelectModule,
     FormsModule,
     NumberPickerModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    NgbPaginationModule,
+    NgbTypeaheadModule,
+    NgbCollapseModule,
+    NgbDropdownModule,
   ],
   exports:[
     NgxSliderModule,
@@ -37,10 +42,16 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     AlarmaFilterbyLineaPipe,
     ButtonComponent,
     PopupComponent,
+    TableComponent,
     NgSelectModule,
     FormsModule,
     NumberPickerModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    NgbTooltipModule,
+    NgbPaginationModule,
+    NgbTypeaheadModule,
+    NgbCollapseModule,
+    NgbDropdownModule,
   ]
 })
 

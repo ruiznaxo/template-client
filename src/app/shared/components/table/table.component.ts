@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { Observable } from 'rxjs';
 
 import { Table } from './advanced.model';
+import { ITable } from './table';
 
 import { tableData } from './data';
 
@@ -11,16 +12,16 @@ import { AdvancedService } from './advanced.service';
 import { AdvancedSortableDirective, SortEvent } from './advanced-sortable.directive';
 
 @Component({
-  selector: 'app-advancedtable',
-  templateUrl: './advancedtable.component.html',
-  styleUrls: ['./advancedtable.component.scss'],
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.scss'],
   providers: [AdvancedService, DecimalPipe]
 })
 
 /**
  * Advanced table component
  */
-export class AdvancedtableComponent implements OnInit {
+export class TableComponent implements OnInit {
   // bread crum data
   breadCrumbItems: Array<{}>;
   // Table data
@@ -29,6 +30,8 @@ export class AdvancedtableComponent implements OnInit {
   hideme: boolean[] = [];
   tables$: Observable<Table[]>;
   total$: Observable<number>;
+
+  @Input() table: ITable;
 
   @ViewChildren(AdvancedSortableDirective) headers: QueryList<AdvancedSortableDirective>;
   public isCollapsed = false;
