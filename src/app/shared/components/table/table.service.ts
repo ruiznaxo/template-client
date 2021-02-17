@@ -2,8 +2,8 @@ import { Injectable, PipeTransform } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { debounceTime, delay, switchMap, tap } from 'rxjs/operators';
-import { Table, SearchResult } from './advanced.model';
-import { tableData } from './data';
+import { SearchResult } from './advanced.model';
+
 import { SortDirection } from './advanced-sortable.directive';
 
 interface State {
@@ -25,7 +25,8 @@ const compare = (v1: string, v2: string) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
  * @param column Fetch the column
  * @param direction Sort direction Ascending or Descending
  */
-function sort(tables: Table[], column: string, direction: string): Table[] {
+function sort(tables: any[], column: string, direction: string): any[] {
+
     if (direction === '' || column === '') {
         return tables;
     } else {
@@ -41,26 +42,28 @@ function sort(tables: Table[], column: string, direction: string): Table[] {
  * @param tables Table field value fetch
  * @param term Search the value
  */
-function matches(tables: Table, term: string, pipe: PipeTransform) {
-    return tables.name.toLowerCase().includes(term.toLowerCase())
-        || tables.position.toLowerCase().includes(term)
-        || tables.office.toLowerCase().includes(term)
-        || pipe.transform(tables.age).includes(term)
-        || tables.date.toLowerCase().includes(term)
-        || tables.salary.toLowerCase().includes(term);
+function matches(tables: any[], term: string, pipe: PipeTransform) {
+
+    return tables.filter((obj) => {
+        return Object.keys(obj).reduce((acc, curr) => {
+            return acc || obj[curr].toString().toLowerCase().includes(term);
+        }, false);
+    })
+
+
 }
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class AdvancedService {
+export class TableService {
     // tslint:disable-next-line: variable-name
     private _loading$ = new BehaviorSubject<boolean>(true);
     // tslint:disable-next-line: variable-name
     private _search$ = new Subject<void>();
     // tslint:disable-next-line: variable-name
-    private _tables$ = new BehaviorSubject<Table[]>([]);
+    private _tables$ = new BehaviorSubject<any[]>([]);
     // tslint:disable-next-line: variable-name
     private _total$ = new BehaviorSubject<number>(0);
     // tslint:disable-next-line: variable-name
@@ -74,6 +77,8 @@ export class AdvancedService {
         endIndex: 9,
         totalRecords: 0
     };
+
+    tableData: any[]
 
     constructor(private pipe: DecimalPipe) {
         this._search$.pipe(
@@ -127,14 +132,20 @@ export class AdvancedService {
         this._search$.next();
     }
 
+    public setTableData(data){
+        this.tableData = data
+    }
+
     /**
      * Search Method
      */
     private _search(): Observable<SearchResult> {
+        console.log("\n In Search");
+
         const { sortColumn, sortDirection, pageSize, page, searchTerm } = this._state;
 
         // 1. sort
-        let tables = sort(tableData, sortColumn, sortDirection);
+        let tables = sort(this.tableData, sortColumn, sortDirection);
 
         // 2. filter
         tables = tables.filter(table => matches(table, searchTerm, this.pipe));

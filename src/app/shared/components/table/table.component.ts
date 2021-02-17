@@ -1,21 +1,18 @@
-import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { Observable } from 'rxjs';
 
-import { Table } from './advanced.model';
 import { ITable } from './table';
 
-import { tableData } from './data';
-
-import { AdvancedService } from './advanced.service';
+import { TableService } from './table.service';
 import { AdvancedSortableDirective, SortEvent } from './advanced-sortable.directive';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
-  providers: [AdvancedService, DecimalPipe]
+  providers: [TableService, DecimalPipe]
 })
 
 /**
@@ -25,44 +22,28 @@ export class TableComponent implements OnInit {
   // bread crum data
   breadCrumbItems: Array<{}>;
   // Table data
-  tableData: Table[];
+
   public selected: any;
-  hideme: boolean[] = [];
-  tables$: Observable<Table[]>;
+
+  tables$: Observable<any[]>;
   total$: Observable<number>;
 
   @Input() table: ITable;
+  @Output() clickButton = new EventEmitter<any>();
 
   @ViewChildren(AdvancedSortableDirective) headers: QueryList<AdvancedSortableDirective>;
-  public isCollapsed = false;
 
-  constructor(public service: AdvancedService) {
+  constructor(public service: TableService) {
     this.tables$ = service.tables$;
     this.total$ = service.total$;
   }
 
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'Tables' }, { label: 'Advanced Table', active: true }];
-    /**
-     * fetch data
-     */
-    this._fetchData();
+    this.service.setTableData(this.table.data)
+    //Setear deta en servicio
   }
 
-  changeValue(i) {
-    this.hideme[i] = !this.hideme[i];
-  }
-
-
-  /**
-   * fetches the table value
-   */
-  _fetchData() {
-    this.tableData = tableData;
-    for (let i = 0; i <= this.tableData.length; i++) {
-      this.hideme.push(true);
-    }
-  }
 
   /**
    * Sort table data
@@ -78,5 +59,11 @@ export class TableComponent implements OnInit {
     });
     this.service.sortColumn = column;
     this.service.sortDirection = direction;
+  }
+
+  click(event) {
+    if (event && event.clientX !== 0 && event.clientY !== 0) {
+      this.clickButton.emit(event);
+    }
   }
 }

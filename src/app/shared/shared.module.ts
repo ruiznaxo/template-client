@@ -19,7 +19,14 @@ import { NumberPickerModule } from 'ng-number-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 @NgModule({
-  declarations: [AlimentacionFilterbyJaulaPipe, JaulaFilterbyLineaPipe, AlarmaFilterbyLineaPipe, ButtonComponent, PopupComponent, TableComponent],
+  declarations: [
+    AlimentacionFilterbyJaulaPipe, 
+    JaulaFilterbyLineaPipe, 
+    AlarmaFilterbyLineaPipe, 
+    ButtonComponent, 
+    PopupComponent, 
+    TableComponent,
+  ],
   imports: [
     CommonModule,
     UIModule,
@@ -52,6 +59,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     NgbTypeaheadModule,
     NgbCollapseModule,
     NgbDropdownModule,
+    UIModule
   ]
 })
 

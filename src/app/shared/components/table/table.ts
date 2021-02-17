@@ -10,7 +10,7 @@ export interface ITable{
 
 export interface ActionsColumn {
     active?: boolean
-    buttons?: Button;
+    buttons?: Button[];
 }
 
 export interface Column {
