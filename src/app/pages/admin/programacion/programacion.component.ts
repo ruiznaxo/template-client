@@ -29,23 +29,24 @@ export class ProgramacionComponent implements OnInit {
     },
     columns: [
       {
-        title: "Nombre",
-        data: "NOMBRE",
+        name: "Nombre",
+        prop: "NOMBRE",
       },
       {
-        title: "Horas",
-        data: "HORAS",
+        name: "Horas",
+        prop: "HORAS",
       },
       {
-        title: "Visitas",
-        data: "VISITAS",
+        name: "Visitas",
+        prop: "VISITAS",
       },
       {
-        title: "Kilos",
-        data: "KILOS",
+        name: "Kilos",
+        prop: "KILOS",
       }
     ],
     data: [],
+    auxData: [],
     searchable: true
 
   }
@@ -72,31 +73,12 @@ export class ProgramacionComponent implements OnInit {
       .subscribe((programaciones: Programacion[]) => {
         this.programaciones = programaciones;
         this.table.data = this.programaciones
-
-        this.test();
-
+        this.table.auxData = this.programaciones
       });
   }
 
   editProgramacion() {
     console.log("ID: ");
-
-  }
-
-  test() {
-    let arg = "10"
-    let filtered = [];
-
-    console.log(Object.keys(this.table.data[0]));
-    
-
-    filtered = this.table.data.filter((obj) => {
-      return Object.keys(obj).reduce((acc, curr) => {
-        return acc || obj[curr].toString().toLowerCase().includes(arg);
-      }, false);
-    })
-
-    console.log(filtered);
 
   }
 

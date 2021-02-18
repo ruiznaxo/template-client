@@ -2,10 +2,11 @@ export interface ITable{
     title?: string;
     subtitle?: string;
     data?: any[];
-    columns?: Column[];
     actionsColumn?: ActionsColumn;
     searchable?: boolean;
+    columns?: Column[];
     showEntries?: boolean;
+    auxData?: any[];
 }
 
 export interface ActionsColumn {
@@ -14,8 +15,8 @@ export interface ActionsColumn {
 }
 
 export interface Column {
-    title?: string;
-    data?: string;
+    prop?: string;
+    name?: string;
 }
 
 export interface Button {

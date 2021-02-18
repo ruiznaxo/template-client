@@ -44,6 +44,9 @@ function sort(tables: any[], column: string, direction: string): any[] {
  */
 function matches(tables: any[], term: string, pipe: PipeTransform) {
 
+    console.log(tables);
+    
+
     return tables.filter((obj) => {
         return Object.keys(obj).reduce((acc, curr) => {
             return acc || obj[curr].toString().toLowerCase().includes(term);
@@ -81,17 +84,7 @@ export class TableService {
     tableData: any[]
 
     constructor(private pipe: DecimalPipe) {
-        this._search$.pipe(
-            tap(() => this._loading$.next(true)),
-            debounceTime(200),
-            switchMap(() => this._search()),
-            delay(200),
-            tap(() => this._loading$.next(false))
-        ).subscribe(result => {
-            this._tables$.next(result.tables);
-            this._total$.next(result.total);
-        });
-        this._search$.next();
+
     }
 
     /**
@@ -134,14 +127,26 @@ export class TableService {
 
     public setTableData(data){
         this.tableData = data
+
+        this._search$.pipe(
+            tap(() => this._loading$.next(true)),
+            debounceTime(200),
+            switchMap(() => this._search()),
+            delay(200),
+            tap(() => this._loading$.next(false))
+        ).subscribe(result => {
+            
+            this._tables$.next(result.tables);
+            this._total$.next(result.total);
+        });
+        this._search$.next();
+        
     }
 
     /**
      * Search Method
      */
     private _search(): Observable<SearchResult> {
-        console.log("\n In Search");
-
         const { sortColumn, sortDirection, pageSize, page, searchTerm } = this._state;
 
         // 1. sort

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { Observable } from 'rxjs';
@@ -18,15 +18,18 @@ import { AdvancedSortableDirective, SortEvent } from './advanced-sortable.direct
 /**
  * Advanced table component
  */
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnChanges {
   // bread crum data
   breadCrumbItems: Array<{}>;
   // Table data
 
   public selected: any;
 
+
   tables$: Observable<any[]>;
   total$: Observable<number>;
+
+  auxData = []
 
   @Input() table: ITable;
   @Output() clickButton = new EventEmitter<any>();
@@ -34,16 +37,34 @@ export class TableComponent implements OnInit {
   @ViewChildren(AdvancedSortableDirective) headers: QueryList<AdvancedSortableDirective>;
 
   constructor(public service: TableService) {
-    this.tables$ = service.tables$;
-    this.total$ = service.total$;
+    
   }
 
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'Tables' }, { label: 'Advanced Table', active: true }];
     this.service.setTableData(this.table.data)
     //Setear deta en servicio
+    this.tables$ = this.service.tables$;
+    this.total$ = this.service.total$;
+
+    this.auxData = [...this.table.data];
+        
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.table && this.table) {
+      this.auxData = [...this.table.data];
+    }
+  }
+ 
+
+  onSelectRed(row) {
+    console.log(row);
+  }
+
+  onSelectBlue(value) {
+    console.log(value);
+  }
 
   /**
    * Sort table data
@@ -65,5 +86,20 @@ export class TableComponent implements OnInit {
     if (event && event.clientX !== 0 && event.clientY !== 0) {
       this.clickButton.emit(event);
     }
+  }
+
+  updateFilter(event) {
+    const val:string = event.target.value.toLowerCase();
+
+    let filtered = []
+
+    filtered = this.table.data.filter((obj) => {
+      return Object.keys(obj).reduce((acc, curr) => {
+        return acc || obj[curr].toString().toLowerCase().includes(val);
+      }, false);
+    }) 
+
+    val ? this.table.data = filtered : this.table.data = this.table.auxData
+
   }
 }

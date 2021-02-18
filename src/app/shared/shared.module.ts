@@ -17,6 +17,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { NumberPickerModule } from 'ng-number-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     NgbTypeaheadModule,
     NgbCollapseModule,
     NgbDropdownModule,
+    NgxDatatableModule
   ],
   exports:[
     NgxSliderModule,
@@ -59,7 +61,8 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     NgbTypeaheadModule,
     NgbCollapseModule,
     NgbDropdownModule,
-    UIModule
+    UIModule,
+    NgxDatatableModule
   ]
 })
 
