@@ -2,6 +2,7 @@ export interface ITable{
     title?: string;
     subtitle?: string;
     data?: any[];
+    buttons?: Button[];
     actionsColumn?: ActionsColumn;
     searchable?: boolean;
     columns?: Column[];
@@ -23,4 +24,5 @@ export interface Button {
     icon?: string;
     tooltip?: string;
     event?: string;
+    text?: string;
 }

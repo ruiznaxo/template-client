@@ -12,9 +12,9 @@ import { AlarmaFilterbyLineaPipe } from './pipes/alarmas-filterby-linea.pipe';
 import { ButtonComponent } from './components/button/button.component';
 import { PopupComponent } from './components/popup/popup.component';
 import { TableComponent } from './components/table/table.component';
-import { NgbCollapseModule, NgbDropdownModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NumberPickerModule } from 'ng-number-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -35,7 +35,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     NgxSliderModule,
     NgbTooltipModule,
     NgSelectModule,
+    NgbModalModule,
     FormsModule,
+    ReactiveFormsModule,
     NumberPickerModule,
     PerfectScrollbarModule,
     NgbPaginationModule,
@@ -52,6 +54,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     ButtonComponent,
     PopupComponent,
     TableComponent,
+    ReactiveFormsModule,
     NgSelectModule,
     FormsModule,
     NumberPickerModule,
@@ -62,7 +65,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     NgbCollapseModule,
     NgbDropdownModule,
     UIModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    NgbModalModule,
   ]
 })
 

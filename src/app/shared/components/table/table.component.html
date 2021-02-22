@@ -13,9 +13,9 @@
           </div>
           <div class="col-3 float-right">
             <form class="app-search d-none d-lg-block">
-              <div class="position-relative">
-                <button type="button" class="btn btn-secondary btn-rounded">
-                  <i class="bx bx-plus font-size-16 align-middle mr-2"></i> Añadir
+              <div class="position-relative" *ngFor="let btn of table.buttons">
+                <button type="button" class="btn btn-secondary btn-rounded" (click)="callBackClick($event, btn)">
+                  <i class="bx bx-{{btn.icon}} font-size-16 align-middle mr-2" ></i> {{btn.text}}
                 </button>
               </div>
             </form>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ITable } from '../../../shared/components/table/table';
@@ -8,13 +8,16 @@ import { TableCallbackInjectable } from '../../../shared/components/table/table-
 import { cloneDeep } from 'lodash';
 
 import Swal from 'sweetalert2';
+import { ProgramacionEditComponent } from './programacion-edit/programacion-edit.component';
 
 @Component({
   selector: 'app-programacion',
   templateUrl: './programacion.component.html',
-  styleUrls: ['./programacion.component.scss']
+  styleUrls: ['./programacion.component.scss'],
 })
 export class ProgramacionComponent extends TableCallbackInjectable implements OnInit {
+
+  @ViewChild(ProgramacionEditComponent) child:ProgramacionEditComponent;
 
   table: ITable = {
     title: "Lista Programaciones",
@@ -33,6 +36,13 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         }
       ]
     },
+    buttons: [
+      {
+        event: "openAddPopup",
+        icon: "plus",
+        text: "Agregar"
+      }
+    ],
     columns: [
       {
         name: "Nombre",
@@ -91,12 +101,16 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
   openEditPopup(programacion: Programacion){
     console.log(programacion);
+
+    this.child.openPopup(this.child)
     
-    this.showEditpopup = true
+    //this.showEditpopup = true
   }
 
   openAddPopup(){
-    this.showAddpopup = true
+    console.log("im here");
+    
+    this.child.openPopup(this.child)
   }
 
   openConfirmPopup(programacion: Programacion){
@@ -151,6 +165,8 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
     })
     
   }
+
+
 
 
 }

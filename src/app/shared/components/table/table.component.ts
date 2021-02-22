@@ -47,9 +47,10 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
 
-  callBackClick(event, button: Button, data?) {       
+  callBackClick(event, button: Button, data?) {        
+    console.log(button);
+       
     this.clickButton.emit({ functionCallBack: button.event, data: data });
-
   }
 
 
