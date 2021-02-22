@@ -38,7 +38,10 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    
     if (changes.table && this.table) {
+      this.table = this.table;
       this.auxData = [...this.table.data];
     }
   }

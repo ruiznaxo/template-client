@@ -5,6 +5,9 @@ import { ITable } from '../../../shared/components/table/table';
 import { ProgramacionService } from './programacion.service';
 import { Programacion } from '../../alimentar/alimentar';
 import { TableCallbackInjectable } from '../../../shared/components/table/table-injectable';
+import { cloneDeep } from 'lodash';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-programacion',
@@ -99,6 +102,36 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   openConfirmPopup(programacion: Programacion){
     console.log(programacion.ID);
     this.confirmPopup = true
+    Swal.fire({
+      title: `¿Eliminar Programación ${programacion.NOMBRE}?`,
+      text: '¡Esto no se puede revertir!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#556ee6',
+      cancelButtonColor: '#f46a6a',
+      confirmButtonText: 'Borrar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.value) {
+
+        this.programacionService.deleteProgrmacion(programacion.ID)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((res) => {
+          const f = this.table.data.findIndex(item => {
+            return programacion.ID === item.ID;
+          });
+          this.programaciones = this.programaciones.filter(p => p.ID !== programacion.ID);
+          this.table.data.splice(f, 1);
+          this.table.data = cloneDeep(this.table.data);
+          Swal.fire('¡Borrada!', `Programación ${programacion.NOMBRE} eliminada`, 'success');
+
+          (err) => console.log(err)
+          
+          //this.loadData;      
+        })
+        
+      }
+    });
   }
 
   addProgramacion(programacion: Programacion){
@@ -111,10 +144,10 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
     this.programacionService.updateProgramacion(programacion.ID, programacion).subscribe(() => this.loadData())
   }
 
-  deleteProgramacion(programacion: Programacion){
+  deleteProgramacion(idProgramacion: number){
     
-    this.programacionService.deleteProgrmacion(programacion.ID).subscribe(() => {
-      this.loadData;
+    this.programacionService.deleteProgrmacion(idProgramacion).subscribe(() => {
+      this.loadData;      
     })
     
   }
