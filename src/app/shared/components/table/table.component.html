@@ -34,7 +34,7 @@
 
               <ul class="list-inline font-size-16 contact-links mb-0">
                 <li class="list-inline-item px-2" *ngFor="let button of table.actionsColumn.buttons">
-                  <a ngbTooltip="{{button.tooltip}}" (click)='onSelectRed(row)'><i
+                  <a ngbTooltip="{{button.tooltip}}" (click)="callBackClick($event, button, row)"><i
                       class="bx bx-{{button.icon}}"></i></a>
                 </li>
               </ul>

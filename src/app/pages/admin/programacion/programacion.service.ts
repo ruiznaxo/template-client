@@ -23,7 +23,7 @@ export class ProgramacionService {
     return this.http.post(this.baseUrl + "programacion", {programacion})
   }
 
-  updateEstadoLinea(idProgramacion: number, programacion: any){
+  updateProgramacion(idProgramacion: number, programacion: any){
     return this.http.patch(this.baseUrl + "programacion/" + idProgramacion, {programacion: programacion})
   }
 
