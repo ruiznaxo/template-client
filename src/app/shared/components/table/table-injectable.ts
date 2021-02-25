@@ -6,7 +6,7 @@ import { CallBack } from '../../services/callback.service';
 export class TableCallbackInjectable {
   constructor() { }
 
-  callBack(event: CallBack) {
+  callBack(event: CallBack) {    
     if (this[event.functionCallBack]) {
       event.extraData ? this[event.functionCallBack](event.data, event.extraData) :
         event.data ? this[event.functionCallBack](event.data) : this[event.functionCallBack]();

@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { ITable } from '../../../shared/components/table/table';
 import { ProgramacionService } from './programacion.service';
-import { Programacion } from '../../alimentar/alimentar';
+import { Linea, Programacion } from '../../alimentar/alimentar';
 import { TableCallbackInjectable } from '../../../shared/components/table/table-injectable';
 import { cloneDeep } from 'lodash';
 
 import Swal from 'sweetalert2';
 import { ProgramacionEditComponent } from './programacion-edit/programacion-edit.component';
+import { AlimentarService } from '../../alimentar/alimentar.service';
 
 @Component({
   selector: 'app-programacion',
@@ -27,12 +28,14 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         {
           icon: "edit-alt",
           tooltip: "Editar",
-          event: "openEditPopup"
+          event: "openEditPopup",
         },
         {
           icon: "trash",
           tooltip: "Eliminar",
-          event: "openConfirmPopup"
+          disabledTooltip: "Programación en uso",
+          event: "openConfirmPopup",
+          fieldDisabledValue: "disableDelete"
         }
       ]
     },
@@ -47,18 +50,22 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
       {
         name: "Nombre",
         prop: "NOMBRE",
+        type: "text"
       },
       {
         name: "Horas",
         prop: "HORAS",
+        type: "text"
       },
       {
         name: "Visitas",
         prop: "VISITAS",
+        type: "text"
       },
       {
         name: "Kilos",
         prop: "KILOS",
+        type: "decimal"
       }
     ],
     data: [],
@@ -78,8 +85,9 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   private unsubscribe = new Subject<void>();
 
   programaciones: Programacion[]
+  lineas: Linea[]
 
-  constructor(private programacionService: ProgramacionService) {
+  constructor(private programacionService: ProgramacionService, private alimentarService: AlimentarService) {
     super();
   }
 
@@ -91,18 +99,29 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   }
 
   loadData() {
-    this.programacionService.getProgramaciones().pipe(takeUntil(this.unsubscribe))
-      .subscribe((programaciones: Programacion[]) => {
-        this.programaciones = programaciones;
+
+    let listaPeticionesHttp = [
+      this.alimentarService.getLineas(),
+      this.programacionService.getProgramaciones()
+    ]
+
+    forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
+      .subscribe(([lineas, programaciones]) => {
+        this.lineas = lineas
+
+        programaciones.map(p => p.disableDelete = this.setDisabledField(p))    
+        this.programaciones = programaciones;        
         this.table.data = this.programaciones
         this.table.auxData = this.programaciones
       });
   }
 
   openEditPopup(programacion: Programacion){
-    console.log(programacion);
 
-    this.child.openPopup(this.child)
+
+    // console.log(programacion);
+
+    // this.child.openPopup(this.child)
     
     //this.showEditpopup = true
   }
@@ -158,12 +177,17 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
     this.programacionService.updateProgramacion(programacion.ID, programacion).subscribe(() => this.loadData())
   }
 
-  deleteProgramacion(idProgramacion: number){
-    
+  deleteProgramacion(idProgramacion: number){    
     this.programacionService.deleteProgrmacion(idProgramacion).subscribe(() => {
       this.loadData;      
-    })
-    
+    })    
+  }
+
+  setDisabledField(programacion){
+    if(this.lineas.find(l => l.IDPROGRAMACION === programacion.ID)){      
+      return true
+    }
+    return false;
   }
 
 

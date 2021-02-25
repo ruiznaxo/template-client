@@ -64,10 +64,35 @@ export const MENU: MenuItem[] = [
         subItems: [
             {
                 id: 11,
-                label: 'Programación',
+                label: 'Silos',
+                link: '/admin/silo',
+                parentId: 10
+            },  
+            {
+                id: 13,
+                label: 'Programaciones',
                 link: '/admin/programacion',
                 parentId: 10
+            },
+            {
+                id: 14,
+                label: 'Lineas',
+                link: '/admin/linea',
+                parentId: 10
+            },
+            {
+                id: 12,
+                label: 'Dosificadores',
+                link: '/admin/dosificador',
+                parentId: 10
+            },
+            {
+                id: 15,
+                label: 'Jaulas',
+                link: '/admin/jaula',
+                parentId: 10
             }
+
         ]
     },
 

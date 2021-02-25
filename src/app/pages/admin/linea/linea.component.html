@@ -1,1 +1,4 @@
-<p>linea works!</p>
+<div class="container-fluid">
+    <app-page-title title="Lineas" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
+</div>

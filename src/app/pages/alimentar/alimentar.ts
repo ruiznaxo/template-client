@@ -67,14 +67,14 @@ export interface Alimentacion {
 }
 
 export interface Dosificador {
-    ID: number;
-    PRIORIDAD: number;
-    MODELOREDUCTOR: string;
-    DIRECCIONMODBUS: number;
-    TASAMAX: number;
-    IDSILO: number;
-    IDLINEA: number;
-    IDALARMA: number;
+    ID?: number;
+    PRIORIDAD?: number;
+    MODELOREDUCTOR?: string;
+    DIRECCIONMODBUS?: number;
+    TASAMAX?: number;
+    IDSILO?: number;
+    IDLINEA?: number;
+    IDALARMA?: number;
 }
 
 export interface Silo {

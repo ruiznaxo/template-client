@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, registerLocaleData } from '@angular/common';
 
 
 import { Button, ITable } from './table';
+import es from '@angular/common/locales/es';
 
 
 @Component({
@@ -33,13 +34,14 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    registerLocaleData(es);
     this.breadCrumbItems = [{ label: 'Tables' }, { label: 'Advanced Table', active: true }];
+    console.log(this.table);
+    
     this.auxData = [...this.table.data];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    
     if (changes.table && this.table) {
       this.table = this.table;
       this.auxData = [...this.table.data];
@@ -47,12 +49,9 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
 
-  callBackClick(event, button: Button, data?) {        
-    console.log(button);
-       
+  callBackClick(event, button: Button, data?) {               
     this.clickButton.emit({ functionCallBack: button.event, data: data });
   }
-
 
   updateFilter(event) {
     const val: string = event.target.value.toLowerCase();
@@ -68,4 +67,17 @@ export class TableComponent implements OnInit, OnChanges {
     val ? this.table.data = filtered : this.table.data = this.table.auxData
 
   }
+
+
+  test(row: any, button: Button): string{
+    let a = button.fieldDisabledValue ? row[button.fieldDisabledValue] : false
+    return a ? button.disabledTooltip : button.tooltip
+  }
+
+  disable(row: any, button: Button): boolean{
+    let a = button.fieldDisabledValue ? row[button.fieldDisabledValue] : false
+    return a;
+  }
+
+
 }

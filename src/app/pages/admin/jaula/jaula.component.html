@@ -1,1 +1,4 @@
-<p>jaula works!</p>
+<div class="container-fluid">
+    <app-page-title title="Jaulas" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
+</div>
