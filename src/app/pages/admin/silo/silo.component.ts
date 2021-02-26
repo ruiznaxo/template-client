@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
-import { Linea, Silo } from '../../alimentar/alimentar';
+import { Dosificador, Silo } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { SiloService } from './silo.service';
 
@@ -16,6 +17,8 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
 
   //propositos de Template
   breadCrumbItems: Array<{}>;
+
+  @ViewChild('scrollDataModal') popup: ElementRef;
 
   table: ITable = {
     title: "Lista ilos",
@@ -30,7 +33,7 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
         {
           icon: "trash",
           tooltip: "Eliminar",
-          disabledTooltip: "Programación en uso",
+          disabledTooltip: "Silo en uso",
           event: "openConfirmPopup",
           fieldDisabledValue: "disableDelete"
         }
@@ -38,7 +41,7 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
     },
     buttons: [
       {
-        event: "openAddPopup",
+        event: "openPopUp",
         icon: "plus",
         text: "Agregar"
       }
@@ -81,13 +84,13 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
   }
 
   silos: Silo[]
-  lineas: Linea[]
+  dosificadores: Dosificador[]
 
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
 
-  constructor(public alimentarService: AlimentarService, public siloService: SiloService) {
+  constructor(public alimentarService: AlimentarService, public siloService: SiloService, public modalService: NgbModal) {
     super();
   }
 
@@ -100,14 +103,15 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
   loadData() {
 
     let listaPeticionesHttp = [
-      this.alimentarService.getLineas(),
+      this.alimentarService.getDosificadores(),
       this.siloService.getSilos()
     ]
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([lineas, silos]) => {
-        this.lineas = lineas
-        silos.map(s => s.)
+      .subscribe(([dosificadores, silos]) => {
+        this.dosificadores = dosificadores
+        silos.map(s => s.CAPACIDAD = (s.CAPACIDAD / 1000))
+        silos.map(s => s.SALDO = (s.SALDO / 1000))
         silos.map(p => p.disableDelete = this.setDisabledField(p))
         this.silos = silos;
         this.table.data = this.silos
@@ -116,10 +120,14 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
   }
 
   setDisabledField(silo) {
-    if (this.lineas.find(l => l.ID === silo.ID)) {
+    if (this.dosificadores.find(d => d.IDSILO === silo.ID)) {
       return true
     }
     return false;
+  }
+
+  openPopUp(){
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
   }
 
 }

@@ -10,9 +10,10 @@ import { JaulaComponent } from './jaula/jaula.component';
 import { DosificadorComponent } from './dosificador/dosificador.component';
 import { UserComponent } from './user/user.component';
 import { ProgramacionEditComponent } from './programacion/programacion-edit/programacion-edit.component';
+import { SiloPopupComponent } from './silo/silo-popup/silo-popup.component';
 
 @NgModule({
-  declarations: [ProgramacionComponent, LineaComponent, SiloComponent, JaulaComponent, DosificadorComponent, UserComponent, ProgramacionEditComponent],
+  declarations: [ProgramacionComponent, LineaComponent, SiloComponent, JaulaComponent, DosificadorComponent, UserComponent, ProgramacionEditComponent, SiloPopupComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

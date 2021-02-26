@@ -78,7 +78,7 @@ export interface Dosificador {
 }
 
 export interface Silo {
-    ID: number;
+    ID?: number;
     NOMBRE: string;
     CAPACIDAD: number;
     MEDICADO: number;

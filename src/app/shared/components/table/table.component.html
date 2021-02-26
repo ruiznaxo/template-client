@@ -36,7 +36,7 @@
           <ngx-datatable-column *ngFor="let col of table.columns" [name]="col.name" [prop]="col.prop">
             <ng-template let-value="value" ngx-datatable-cell-template>
               <span *ngIf="col.type == 'decimal'">
-                {{ value | number:'':'es' }}
+                {{ value | number:'1.0-0':'es' }}
               </span>
               <span *ngIf="col.type == 'text'">
                 {{ value }}

@@ -19,8 +19,8 @@ export class SiloService {
     return this.http.get(this.baseUrl + "silo")
   }
 
-  addSilo(silo: Silo) {
-    return this.http.post(this.baseUrl + "silo", {silo})
+  addSilo(silo: any) {
+    return this.http.post(this.baseUrl + "silo", {silo: silo})
   }
 
   updateSilo(idSilo: number, silo: any){

@@ -54,7 +54,9 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   updateFilter(event) {
-    const val: string = event.target.value.toLowerCase();
+    const val: string = event.target.value.toLowerCase();    
+
+    this.table.data = this.table.auxData;
 
     let filtered = []
 

@@ -3,3 +3,6 @@
     <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
 </div>
 
+<ng-template #scrollDataModal let-modal>
+    <app-silo-popup [modal]="modal"></app-silo-popup>
+</ng-template>
