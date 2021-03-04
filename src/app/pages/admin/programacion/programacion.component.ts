@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { ITable } from '../../../shared/components/table/table';
@@ -10,6 +10,7 @@ import { cloneDeep } from 'lodash';
 import Swal from 'sweetalert2';
 import { ProgramacionEditComponent } from './programacion-edit/programacion-edit.component';
 import { AlimentarService } from '../../alimentar/alimentar.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-programacion',
@@ -18,7 +19,7 @@ import { AlimentarService } from '../../alimentar/alimentar.service';
 })
 export class ProgramacionComponent extends TableCallbackInjectable implements OnInit {
 
-  @ViewChild(ProgramacionEditComponent) child:ProgramacionEditComponent;
+  @ViewChild('scrollDataModal') popup: ElementRef;
 
   table: ITable = {
     title: "Lista Programaciones",
@@ -28,20 +29,20 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         {
           icon: "edit-alt",
           tooltip: "Editar",
-          event: "openEditPopup",
+          event: "openEditPopUp",
         },
         {
           icon: "trash",
           tooltip: "Eliminar",
           disabledTooltip: "Programación en uso",
-          event: "openConfirmPopup",
+          event: "openDeleteConfirm",
           fieldDisabledValue: "disableDelete"
         }
       ]
     },
     buttons: [
       {
-        event: "openAddPopup",
+        event: "openSavePopUp",
         icon: "plus",
         text: "Agregar"
       }
@@ -81,13 +82,15 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   //propositos de Template
   breadCrumbItems: Array<{}>;
 
+  editProgramacion: Programacion;
+
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
   programaciones: Programacion[]
   lineas: Linea[]
 
-  constructor(private programacionService: ProgramacionService, private alimentarService: AlimentarService) {
+  constructor(public modalService: NgbModal, private programacionService: ProgramacionService, private alimentarService: AlimentarService) {
     super();
   }
 
@@ -116,24 +119,31 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
       });
   }
 
-  openEditPopup(programacion: Programacion){
-
-
-    // console.log(programacion);
-
-    // this.child.openPopup(this.child)
-    
-    //this.showEditpopup = true
+  addProgramacion(programacion: Programacion){
+    this.programacionService.addProgramacion(programacion).subscribe(() => {
+      this.loadData();
+    })
   }
 
-  openAddPopup(){
-    console.log("im here");
-    
-    this.child.openPopup(this.child)
+  setDisabledField(programacion){
+    if(this.lineas.find(l => l.IDPROGRAMACION === programacion.ID)){      
+      return true
+    }
+    return false;
   }
 
-  openConfirmPopup(programacion: Programacion){
-    console.log(programacion.ID);
+  openSavePopUp(){
+    this.editProgramacion = undefined
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  }
+
+  openEditPopUp(data){
+    this.editProgramacion = data;    
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  }
+
+
+  openDeleteConfirm(programacion: Programacion){
     this.confirmPopup = true
     Swal.fire({
       title: `¿Eliminar Programación ${programacion.NOMBRE}?`,
@@ -156,7 +166,7 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
           this.programaciones = this.programaciones.filter(p => p.ID !== programacion.ID);
           this.table.data.splice(f, 1);
           this.table.data = cloneDeep(this.table.data);
-          Swal.fire('¡Borrada!', `Programación ${programacion.NOMBRE} eliminada`, 'success');
+          Swal.fire('¡Borrado!', `Programación ${programacion.NOMBRE} eliminada`, 'success');
 
           (err) => console.log(err)
           
@@ -166,31 +176,10 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
       }
     });
   }
-
-  addProgramacion(programacion: Programacion){
-    this.programacionService.addProgramacion(programacion).subscribe(() => {
-      this.loadData();
-    })
+  
+  aceptarPopupClick(event){
+    this.loadData()  
+    this.table.data = cloneDeep(this.table.data);
   }
-
-  editProgramacion(programacion: Programacion) {
-    this.programacionService.updateProgramacion(programacion.ID, programacion).subscribe(() => this.loadData())
-  }
-
-  deleteProgramacion(idProgramacion: number){    
-    this.programacionService.deleteProgrmacion(idProgramacion).subscribe(() => {
-      this.loadData;      
-    })    
-  }
-
-  setDisabledField(programacion){
-    if(this.lineas.find(l => l.IDPROGRAMACION === programacion.ID)){      
-      return true
-    }
-    return false;
-  }
-
-
-
 
 }

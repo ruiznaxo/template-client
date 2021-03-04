@@ -20,11 +20,11 @@ export class SiloService {
   }
 
   addSilo(silo: any) {
-    return this.http.post(this.baseUrl + "silo", {silo: silo})
+    return this.http.post(this.baseUrl + "silo", silo)
   }
 
   updateSilo(idSilo: number, silo: any){
-    return this.http.patch(this.baseUrl + "silo/" + idSilo, {silo: silo})
+    return this.http.patch(this.baseUrl + "silo/" + idSilo, silo)
   }
 
   deleteSilo(idSilo: number){

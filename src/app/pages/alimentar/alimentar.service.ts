@@ -61,11 +61,11 @@ export class AlimentarService {
   }
 
   updateTasaJaula(idJaula: number, valorTasa: number){
-    this.http.patch(this.baseUrl + "jaula/" + idJaula, {tasa: valorTasa})
+    this.http.patch(this.baseUrl + "jaula/tasa" + idJaula, {tasa: valorTasa})
   }
 
   updateEstadoLinea(idLinea: number, estado: number){
-    return this.http.patch(this.baseUrl + "linea/" + idLinea, {estado: estado})
+    return this.http.patch(this.baseUrl + "linea/estado" + idLinea, {estado: estado})
   }
 
   updateHzPausa(idLinea: number, hzPausa: number){

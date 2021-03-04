@@ -1,19 +1,21 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
+import Swal from 'sweetalert2';
 import { Dosificador, Silo } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { SiloService } from './silo.service';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-silo',
   templateUrl: './silo.component.html',
   styleUrls: ['./silo.component.scss']
 })
-export class SiloComponent extends TableCallbackInjectable implements OnInit {
+export class SiloComponent extends TableCallbackInjectable implements OnInit, OnDestroy {
 
   //propositos de Template
   breadCrumbItems: Array<{}>;
@@ -28,20 +30,20 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
         {
           icon: "edit-alt",
           tooltip: "Editar",
-          event: "openEditPopup",
+          event: "openEditPopUp",
         },
         {
           icon: "trash",
           tooltip: "Eliminar",
           disabledTooltip: "Silo en uso",
-          event: "openConfirmPopup",
+          event: "openDeleteConfirm",
           fieldDisabledValue: "disableDelete"
         }
       ]
     },
     buttons: [
       {
-        event: "openPopUp",
+        event: "openSavePopUp",
         icon: "plus",
         text: "Agregar"
       }
@@ -53,28 +55,29 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
         type: "text"
       },
       {
-        name: "Capacidad",
+        name: "Alimento",
+        prop: "ALIMENTO",
+        type: "text"
+      },
+      {
+        name: "Saldo (Kg)",
+        prop: "SALDO",
+        type: "decimal"
+      },
+      {
+        name: "Capacidad (Kg)",
         prop: "CAPACIDAD",
+        type: "decimal"
+      },
+      {
+        name: "Pellet Kilo (gr)",
+        prop: "PELLETKILO",
         type: "decimal"
       },
       {
         name: "Medicado",
         prop: "MEDICADO",
-      },
-      {
-        name: "Saldo",
-        prop: "SALDO",
-        type: "decimal"
-      },
-      {
-        name: "Pellet Kilo",
-        prop: "PELLETKILO",
-        type: "decimal"
-      },
-      {
-        name: "Alimento",
-        prop: "ALIMENTO",
-        type: "text"
+        type: "checkbox"
       },
     ],
     data: [],
@@ -85,6 +88,9 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
 
   silos: Silo[]
   dosificadores: Dosificador[]
+  confirmPopup: boolean = false;
+
+  editSilo: Silo;
 
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
@@ -96,8 +102,13 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Admin' }, { label: 'Silos', active: true }];
-
     this.loadData()
+  }
+
+  ngOnDestroy() {
+    //cancelar suscripciones
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   loadData() {
@@ -126,8 +137,54 @@ export class SiloComponent extends TableCallbackInjectable implements OnInit {
     return false;
   }
 
-  openPopUp(){
+  openSavePopUp(){
+    this.editSilo = undefined
     this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
   }
+
+  openEditPopUp(data){
+    this.editSilo = data;    
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  }
+
+  openDeleteConfirm(silo: Silo){
+    this.confirmPopup = true
+    Swal.fire({
+      title: `¿Eliminar Silo ${silo.NOMBRE}?`,
+      text: '¡Esto no se puede revertir!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#556ee6',
+      cancelButtonColor: '#f46a6a',
+      confirmButtonText: 'Borrar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.value) {
+
+        this.siloService.deleteSilo(silo.ID)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((res) => {
+          const f = this.table.data.findIndex(item => {
+            return silo.ID === item.ID;
+          });
+          this.silos = this.silos.filter(p => p.ID !== silo.ID);
+          this.table.data.splice(f, 1);
+          this.table.data = cloneDeep(this.table.data);
+          Swal.fire('¡Borrado!', `Silo ${silo.NOMBRE} eliminado`, 'success');
+
+          (err) => console.log(err)
+          
+          //this.loadData;      
+        })
+        
+      }
+    });
+  }
+
+  aceptarPopupClick(event){
+    this.loadData()  
+    this.table.data = cloneDeep(this.table.data);
+  }
+
 
 }

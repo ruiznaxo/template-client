@@ -4,5 +4,5 @@
 </div>
 
 <ng-template #scrollDataModal let-modal>
-    <app-silo-popup [modal]="modal"></app-silo-popup>
+    <app-silo-popup [modal]="modal" [editSilo]="editSilo" (aceptar) = "aceptarPopupClick($event)"></app-silo-popup>
 </ng-template>

@@ -4,5 +4,6 @@
 </div>
 
 
-<!-- Scrollable Modal -->
-<app-programacion-edit></app-programacion-edit>
+<ng-template #scrollDataModal let-modal>
+    <app-programacion-edit [modal]="modal" [editProgramacion]="editProgramacion" (aceptar) = "aceptarPopupClick($event)"></app-programacion-edit>
+</ng-template>

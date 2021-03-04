@@ -19,12 +19,12 @@ export class ProgramacionService {
     return this.http.get(this.baseUrl + "programacion")
   }
 
-  addProgramacion(programacion: Programacion) {
-    return this.http.post(this.baseUrl + "programacion", {programacion})
+  addProgramacion(programacion: any) {
+    return this.http.post(this.baseUrl + "programacion", programacion)
   }
 
   updateProgramacion(idProgramacion: number, programacion: any){
-    return this.http.patch(this.baseUrl + "programacion/" + idProgramacion, {programacion: programacion})
+    return this.http.patch(this.baseUrl + "programacion/" + idProgramacion, programacion)
   }
 
   deleteProgrmacion(idProgramacion: number){

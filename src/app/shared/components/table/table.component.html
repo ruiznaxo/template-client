@@ -41,6 +41,12 @@
               <span *ngIf="col.type == 'text'">
                 {{ value }}
               </span>
+              <span *ngIf="col.type == 'checkbox'">
+                <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-success mb-3">
+                  <input type="checkbox" class="custom-control-input" id="customCheck-outlinecolor2" [checked]="value" readonly disabled>
+                  <label class="custom-control-label" for="customCheck-outlinecolor2"></label>
+                </div>
+              </span>
               
             </ng-template>
           </ngx-datatable-column>

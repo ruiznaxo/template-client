@@ -46,6 +46,7 @@ export interface Programacion {
     HORAS?: number;
     VISITAS?: number;
     USUARIO?: number;
+    KILOS?: number;
 }
 
 export interface Alimentacion {
