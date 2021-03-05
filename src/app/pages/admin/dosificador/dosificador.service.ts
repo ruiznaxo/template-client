@@ -19,12 +19,12 @@ export class DosificadorService {
     return this.http.get(this.baseUrl + "dosificador")
   }
 
-  addDosificador(dosificador: Dosificador) {
-    return this.http.post(this.baseUrl + "dosificador", {dosificador})
+  addDosificador(dosificador: any) {
+    return this.http.post(this.baseUrl + "dosificador", dosificador)
   }
 
   updateDosificador(idDosificador: number, dosificador: any){
-    return this.http.patch(this.baseUrl + "dosificador/" + idDosificador, {dosificador: dosificador})
+    return this.http.patch(this.baseUrl + "dosificador/" + idDosificador, dosificador)
   }
 
   deleteDosificador(idDosificador: number){

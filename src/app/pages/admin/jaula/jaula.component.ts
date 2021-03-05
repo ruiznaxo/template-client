@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
+import Swal from 'sweetalert2';
 import { Jaula } from '../../alimentar/alimentar';
+import { AlimentarService } from '../../alimentar/alimentar.service';
 import { JaulaService } from './jaula.service';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-jaula',
@@ -12,6 +16,8 @@ import { JaulaService } from './jaula.service';
   styleUrls: ['./jaula.component.scss']
 })
 export class JaulaComponent extends TableCallbackInjectable implements OnInit {
+
+  @ViewChild('scrollDataModal') popup: ElementRef;
 
   //propositos de Template
   breadCrumbItems: Array<{}>;
@@ -24,20 +30,20 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
         {
           icon: "edit-alt",
           tooltip: "Editar",
-          event: "openEditPopup",
+          event: "openEditPopUp",
         },
         {
           icon: "trash",
           tooltip: "Eliminar",
           disabledTooltip: "Programación en uso",
-          event: "openConfirmPopup",
+          event: "openDeleteConfirm",
           fieldDisabledValue: "disableDelete"
         }
       ]
     },
     buttons: [
       {
-        event: "openAddPopup",
+        event: "openSavePopUp",
         icon: "plus",
         text: "Agregar"
       }
@@ -54,6 +60,26 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
         type: "text"
       },
       {
+        name: "Cantidad Peces",
+        prop: "CANTIDADPECES",
+        type: "text"
+      },
+      {
+        name: "Peso Promedio",
+        prop: "PESOPROMEDIO",
+        type: "text"
+      },
+      {
+        name: "Selectora",
+        prop: "IDSELECTORA",
+        type: "text"
+      },
+      {
+        name: "Dosificador",
+        prop: "IDDOSIFICADOR",
+        type: "text"
+      },
+      {
         name: "Linea",
         prop: "IDLINEA",
         type: "text"
@@ -65,13 +91,24 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
 
   }
 
+  //Arrays de Objetos
   jaulas: Jaula[]
+
+  //Objeto para editar
+  editJaula: Jaula;
+  
+  //popups
+  confirmPopup : boolean = false;
+
 
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
-
-  constructor(public jaulaService: JaulaService) {
+  constructor(
+    public jaulaService: JaulaService,
+    public modalService: NgbModal, 
+    private alimentarService: AlimentarService
+    ) {
     super();
   }
 
@@ -95,11 +132,61 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
       });
   }
 
-  setDisabledField(jaula) {
-    if (this.jaulas.find(l => l.ID === jaula.ID)) {
+  setDisabledField(doser){
+    if(this.jaulas.find(j => j.IDDOSIFICADOR === doser.ID)){      
       return true
     }
     return false;
+  }
+
+  openSavePopUp(){
+    this.editJaula = undefined
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  }
+
+  openEditPopUp(data){
+    this.editJaula = data;    
+    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  }
+
+
+  openDeleteConfirm(jaula: Jaula){
+    this.confirmPopup = true
+    Swal.fire({
+      title: `¿Eliminar Jaula ${jaula.ID}?`,
+      text: '¡Esto no se puede revertir!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#556ee6',
+      cancelButtonColor: '#f46a6a',
+      confirmButtonText: 'Borrar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.value) {
+
+        this.jaulaService.deleteJaula(jaula.ID)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((res) => {
+          const f = this.table.data.findIndex(item => {
+            return jaula.ID === item.ID;
+          });
+          this.jaulas = this.jaulas.filter(p => p.ID !== jaula.ID);
+          this.table.data.splice(f, 1);
+          this.table.data = cloneDeep(this.table.data);
+          Swal.fire('¡Borrado!', `Jaula ${jaula.ID} eliminada`, 'success');
+
+          (err) => console.log(err)
+          
+          //this.loadData;      
+        })
+        
+      }
+    });
+  }
+  
+  aceptarPopupClick(event){
+    this.loadData()  
+    this.table.data = cloneDeep(this.table.data);
   }
 
 }

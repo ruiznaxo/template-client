@@ -19,12 +19,12 @@ export class JaulaService {
     return this.http.get(this.baseUrl + "jaula")
   }
 
-  addJaula(jaula: Jaula) {
-    return this.http.post(this.baseUrl + "jaula", {jaula})
+  addJaula(jaula: any) {
+    return this.http.post(this.baseUrl + "jaula", jaula)
   }
 
   updateJaula(idJaula: number, jaula: any){
-    return this.http.patch(this.baseUrl + "jaula/" + idJaula, {jaula: jaula})
+    return this.http.patch(this.baseUrl + "jaula/" + idJaula, jaula)
   }
 
   deleteJaula(idJaula: number){

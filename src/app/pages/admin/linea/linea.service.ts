@@ -19,12 +19,12 @@ export class LineaService {
     return this.http.get(this.baseUrl + "linea")
   }
 
-  addLinea(linea: Linea) {
-    return this.http.post(this.baseUrl + "linea", {linea})
+  addLinea(linea: any) {
+    return this.http.post(this.baseUrl + "linea", linea)
   }
 
   updateLinea(idLinea: number, linea: any){
-    return this.http.patch(this.baseUrl + "linea/" + idLinea, {linea: linea})
+    return this.http.patch(this.baseUrl + "linea/" + idLinea, linea)
   }
 
   deleteLinea(idLinea: number){

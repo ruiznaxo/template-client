@@ -2,3 +2,7 @@
     <app-page-title title="Jaulas" [breadcrumbItems]="breadCrumbItems"></app-page-title>
     <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
 </div>
+
+<ng-template #scrollDataModal let-modal>
+    <app-jaula-popup [modal]="modal" [editObject]="editJaula" (aceptar) = "aceptarPopupClick($event)"></app-jaula-popup>
+</ng-template>

@@ -75,8 +75,6 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
   }
 
-  showEditpopup : boolean = false;
-  showAddpopup : boolean = false;
   confirmPopup : boolean = false;
 
   //propositos de Template
@@ -117,12 +115,6 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         this.table.data = this.programaciones
         this.table.auxData = this.programaciones
       });
-  }
-
-  addProgramacion(programacion: Programacion){
-    this.programacionService.addProgramacion(programacion).subscribe(() => {
-      this.loadData();
-    })
   }
 
   setDisabledField(programacion){

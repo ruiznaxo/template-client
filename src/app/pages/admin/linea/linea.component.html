@@ -2,3 +2,7 @@
     <app-page-title title="Lineas" [breadcrumbItems]="breadCrumbItems"></app-page-title>
     <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
 </div>
+
+<ng-template #scrollDataModal let-modal>
+    <app-linea-popup [modal]="modal" [editObject]="editLinea" (aceptar) = "aceptarPopupClick($event)"></app-linea-popup>
+</ng-template>
