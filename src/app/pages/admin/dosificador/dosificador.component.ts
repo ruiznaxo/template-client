@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
 import Swal from 'sweetalert2';
-import { Dosificador, Jaula } from '../../alimentar/alimentar';
+import { Dosificador, Jaula, Linea } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { DosificadorService } from '../dosificador/dosificador.service';
 import { cloneDeep } from 'lodash';
@@ -52,32 +52,38 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
       {
         name: "Dosificador",
         prop: "ID",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Prioridad",
         prop: "PRIORIDAD",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Modelo Reductor",
         prop: "MODELOREDUCTOR",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Tasamax",
         prop: "TASAMAX",
-        type: "decimal"
+        type: "decimal",
+        sort: true
       },
       {
         name: "Silo",
         prop: "IDSILO",
-        type: "text"
+        type: "text",
+        showedName: "nombreSilo"
       },
       {
         name: "Linea",
         prop: "IDLINEA",
-        type: "text"
+        type: "text",
+        showedName: "nombreLinea"
       }
     ],
     data: [],
@@ -89,6 +95,7 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
   //Arrays de Objetos
   dosificadores: Dosificador[]
   jaulas: Jaula[]
+  lineas: Linea[]
 
   //Objeto para editar
   editDoser: Dosificador;
@@ -119,13 +126,18 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
 
     let listaPeticionesHttp = [
       this.dosificadorService.getDosificadores(),
-      this.alimentarService.getJaulas()
+      this.alimentarService.getJaulas(),
+      this.alimentarService.getLineas(),
+      this.alimentarService.getSilos(),
     ]
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([dosificadores, jaulas]) => {
+      .subscribe(([dosificadores, jaulas, lineas, silos]) => {
         this.jaulas = jaulas;
+        this.lineas = lineas;
         dosificadores.map(l => l.disableDelete = this.setDisabledField(l))  
+        dosificadores.map(d => d.nombreLinea = this.alimentarService.getNombre(lineas, d.IDLINEA, "NOMBRE"))
+        dosificadores.map(d => d.nombreSilo = this.alimentarService.getNombre(silos, d.IDSILO, "NOMBRE"))
         this.dosificadores = dosificadores
         this.table.data = this.dosificadores
         this.table.auxData = this.dosificadores
@@ -141,12 +153,12 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
 
   openSavePopUp(){
     this.editDoser = undefined
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
   openEditPopUp(data){
     this.editDoser = data;    
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
 

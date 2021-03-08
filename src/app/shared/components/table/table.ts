@@ -19,6 +19,8 @@ export interface Column {
     prop?: string;
     name?: string;
     type?: TypeData; 
+    showedName?: string;
+    sort?: boolean;
 }
 
 export interface Button {

@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
 import Swal from 'sweetalert2';
-import { Jaula, Linea } from '../../alimentar/alimentar';
+import { Jaula, Linea, Programacion } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { LineaService } from './linea.service';
 import { cloneDeep } from 'lodash';
@@ -15,7 +15,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './linea.component.html',
   styleUrls: ['./linea.component.scss']
 })
-export class LineaComponent extends TableCallbackInjectable implements OnInit {
+export class LineaComponent extends TableCallbackInjectable implements OnInit, OnDestroy {
 
   @ViewChild('scrollDataModal') popup: ElementRef;
 
@@ -57,7 +57,8 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit {
       {
         name: "Programación",
         prop: "IDPROGRAMACION",
-        type: "text"
+        type: "text",
+        showedName: "nombreProgramacion"
       }
     ],
     data: [],
@@ -69,20 +70,21 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit {
   //Arrays de Objetos
   lineas: Linea[]
   jaulas: Jaula[]
+  programaciones: Programacion[]
 
   //Objeto para editar
   editLinea: Linea;
-  
+
   //popups
-  confirmPopup : boolean = false;
+  confirmPopup: boolean = false;
 
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
 
   constructor(
-    public lineaService: LineaService, 
-    public modalService: NgbModal, 
+    public lineaService: LineaService,
+    public modalService: NgbModal,
     private alimentarService: AlimentarService) {
     super();
   }
@@ -92,18 +94,29 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit {
     this.loadData()
   }
 
+  //para cerrar las subscripciones
+  ngOnDestroy() {
+    //cancelar suscripciones
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+
   loadData() {
 
     let listaPeticionesHttp = [
       this.lineaService.getLineas(),
-      this.alimentarService.getJaulas()
+      this.alimentarService.getJaulas(),
+      this.alimentarService.getProgramaciones()
     ]
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([lineas, jaulas]) => {
+      .subscribe(([lineas, jaulas, programaciones]) => {
         this.jaulas = jaulas;
-        
-        lineas.map(l => l.disableDelete = this.setDisabledField(l))  
+        this.programaciones = programaciones
+
+        lineas.map(l => l.disableDelete = this.setDisabledField(l))
+        lineas.map(l => l.nombreProgramacion = this.alimentarService.getNombre(programaciones, l.IDPROGRAMACION, "NOMBRE"))
         this.lineas = lineas;
 
         this.table.data = this.lineas;
@@ -111,25 +124,25 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit {
       });
   }
 
-  setDisabledField(linea){
-    if(this.jaulas.find(j => j.IDLINEA === linea.ID)){      
+  setDisabledField(linea) {
+    if (this.jaulas.find(j => j.IDLINEA === linea.ID)) {
       return true
     }
     return false;
   }
 
-  openSavePopUp(){
+  openSavePopUp() {
     this.editLinea = undefined
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
-  openEditPopUp(data){
-    this.editLinea = data;    
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+  openEditPopUp(data) {
+    this.editLinea = data;
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
 
-  openDeleteConfirm(linea: Linea){
+  openDeleteConfirm(linea: Linea) {
     this.confirmPopup = true
     Swal.fire({
       title: `¿Eliminar Linea ${linea.NOMBRE}?`,
@@ -144,28 +157,32 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit {
       if (result.value) {
 
         this.lineaService.deleteLinea(linea.ID)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((res) => {
-          const f = this.table.data.findIndex(item => {
-            return linea.ID === item.ID;
-          });
-          this.lineas = this.lineas.filter(p => p.ID !== linea.ID);
-          this.table.data.splice(f, 1);
-          this.table.data = cloneDeep(this.table.data);
-          Swal.fire('¡Borrado!', `Linea ${linea.NOMBRE} eliminada`, 'success');
+          .pipe(takeUntil(this.unsubscribe))
+          .subscribe((res) => {
+            const f = this.table.data.findIndex(item => {
+              return linea.ID === item.ID;
+            });
+            this.lineas = this.lineas.filter(p => p.ID !== linea.ID);
+            this.table.data.splice(f, 1);
+            this.table.data = cloneDeep(this.table.data);
+            Swal.fire('¡Borrado!', `Linea ${linea.NOMBRE} eliminada`, 'success');
 
-          (err) => console.log(err)
-          
-          //this.loadData;      
-        })
-        
+            (err) => console.log(err)
+
+            //this.loadData;      
+          })
+
       }
     });
   }
-  
-  aceptarPopupClick(event){
-    this.loadData()  
+
+  aceptarPopupClick(event) {
+    this.loadData()
     this.table.data = cloneDeep(this.table.data);
+  }
+
+  getNombreProgramacion(idProgramacion): string{
+    return this.programaciones.find(p => p.ID === idProgramacion).NOMBRE
   }
 
 }

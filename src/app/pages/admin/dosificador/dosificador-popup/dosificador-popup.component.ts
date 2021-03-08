@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Dosificador } from '../../../alimentar/alimentar';
+import { Dosificador, Linea } from '../../../alimentar/alimentar';
 import { DosificadorService } from '../dosificador.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class DosificadorPopupComponent implements OnInit {
 
   @Input() modal: any;
   @Input() editObject: Dosificador;
+  @Input() lineas: Linea[];
   @Output() aceptar = new EventEmitter<any>();
 
 

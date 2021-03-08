@@ -36,7 +36,6 @@ export class TableComponent implements OnInit, OnChanges {
   ngOnInit() {
     registerLocaleData(es);
     this.breadCrumbItems = [{ label: 'Tables' }, { label: 'Advanced Table', active: true }];
-    console.log(this.table);
     
     this.auxData = [...this.table.data];
   }
@@ -79,6 +78,11 @@ export class TableComponent implements OnInit, OnChanges {
   disable(row: any, button: Button): boolean{
     let a = button.fieldDisabledValue ? row[button.fieldDisabledValue] : false
     return a;
+  }
+
+  getShowedName(row, propertyName: string){    
+    return row[propertyName];
+
   }
 
 

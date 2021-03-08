@@ -33,13 +33,15 @@
         <!-- Inicio Tabla -->
 
         <ngx-datatable class="dark" [rows]="table.data" [columns]="table.columns" [columnMode]="'force'">
-          <ngx-datatable-column *ngFor="let col of table.columns" [name]="col.name" [prop]="col.prop">
-            <ng-template let-value="value" ngx-datatable-cell-template>
+          <ngx-datatable-column *ngFor="let col of table.columns" [name]="col.name" [prop]="col.prop" [sortable]="col.sort ? col.sort : false">
+            <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
               <span *ngIf="col.type == 'decimal'">
                 {{ value | number:'1.0-0':'es' }}
               </span>
               <span *ngIf="col.type == 'text'">
-                {{ value }}
+                <div *ngIf="col.showedName; then thenBlock else elseBlock;"></div>
+                <ng-template #thenBlock>{{ getShowedName(row, col.showedName) }}</ng-template>
+                <ng-template #elseBlock>{{ value }}</ng-template> 
               </span>
               <span *ngIf="col.type == 'checkbox'">
                 <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-success mb-3">

@@ -52,7 +52,8 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
       {
         name: "Nombre",
         prop: "NOMBRE",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Programación",
@@ -62,12 +63,14 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
       {
         name: "Cantidad Peces",
         prop: "CANTIDADPECES",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Peso Promedio",
         prop: "PESOPROMEDIO",
-        type: "text"
+        type: "text",
+        sort: true
       },
       {
         name: "Selectora",
@@ -82,7 +85,8 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
       {
         name: "Linea",
         prop: "IDLINEA",
-        type: "text"
+        type: "text",
+        showedName: "nombreLinea"
       }
     ],
     data: [],
@@ -121,11 +125,15 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
   loadData() {
 
     let listaPeticionesHttp = [
-      this.jaulaService.getJaulas()
+      this.jaulaService.getJaulas(),
+      this.alimentarService.getLineas()
     ]
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([jaulas]) => {
+      .subscribe(([jaulas, lineas]) => {
+
+        jaulas.map(j => j.nombreLinea = this.alimentarService.getNombre(lineas, j.IDLINEA, "NOMBRE"))
+
         this.jaulas = jaulas
         this.table.data = this.jaulas
         this.table.auxData = this.jaulas

@@ -80,36 +80,36 @@ export interface Dosificador {
 
 export interface Silo {
     ID?: number;
-    NOMBRE: string;
-    CAPACIDAD: number;
-    MEDICADO: number;
-    SALDO: number;
-    PELLETKILO: number;
-    ALIMENTO: string;
+    NOMBRE?: string;
+    CAPACIDAD?: number;
+    MEDICADO?: number;
+    SALDO?: number;
+    PELLETKILO?: number;
+    ALIMENTO?: string;
 }
 
 
 export interface Alarma {
-    ID: number;
-    DIRECCIONMODBUS: number;
-    IDTIPOALARMA: number;
-    ESTADO: number;
-    IDLINEA: number;
+    ID?: number;
+    DIRECCIONMODBUS?: number;
+    IDTIPOALARMA?: number;
+    ESTADO?: number;
+    IDLINEA?: number;
 }
 
 export interface TipoAlarma {
-    ID: number;
-    TIPOALARMA: string;
-    ACTIVO: number;
+    ID?: number;
+    TIPOALARMA?: string;
+    ACTIVO?: number;
 }
 
 export interface Selectora {   
-    ID: number;
-    SALIDAS: number;
-    MODELO: string;    
-    DIRECCIONMODBUS: number;   
-    IDLINEA: number;    
-    IDALARMA: number;
+    ID?: number;
+    SALIDAS?: number;
+    MODELO?: string;    
+    DIRECCIONMODBUS?: number;   
+    IDLINEA?: number;    
+    IDALARMA?: number;
 }
 
 
