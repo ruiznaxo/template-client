@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
 import Swal from 'sweetalert2';
-import { Dosificador, Jaula, Linea } from '../../alimentar/alimentar';
+import { Dosificador, Jaula, Linea, Silo } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { DosificadorService } from '../dosificador/dosificador.service';
 import { cloneDeep } from 'lodash';
@@ -96,6 +96,7 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
   dosificadores: Dosificador[]
   jaulas: Jaula[]
   lineas: Linea[]
+  silos: Silo[]
 
   //Objeto para editar
   editDoser: Dosificador;
@@ -135,6 +136,7 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
       .subscribe(([dosificadores, jaulas, lineas, silos]) => {
         this.jaulas = jaulas;
         this.lineas = lineas;
+        this.silos = silos;
         dosificadores.map(l => l.disableDelete = this.setDisabledField(l))  
         dosificadores.map(d => d.nombreLinea = this.alimentarService.getNombre(lineas, d.IDLINEA, "NOMBRE"))
         dosificadores.map(d => d.nombreSilo = this.alimentarService.getNombre(silos, d.IDSILO, "NOMBRE"))

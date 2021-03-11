@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ITable } from 'src/app/shared/components/table/table';
 import { TableCallbackInjectable } from 'src/app/shared/components/table/table-injectable';
 import Swal from 'sweetalert2';
-import { Jaula } from '../../alimentar/alimentar';
+import { Jaula, Linea, Selectora, Dosificador, Silo } from '../../alimentar/alimentar';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { JaulaService } from './jaula.service';
 import { cloneDeep } from 'lodash';
@@ -56,11 +56,6 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
         sort: true
       },
       {
-        name: "Programación",
-        prop: "IDPROGRAMACION",
-        type: "text"
-      },
-      {
         name: "Cantidad Peces",
         prop: "CANTIDADPECES",
         type: "text",
@@ -97,6 +92,10 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
 
   //Arrays de Objetos
   jaulas: Jaula[]
+  lineas: Linea[]
+  selectoras: Selectora[]
+  dosificadores: Dosificador[]
+  silos: Silo[]
 
   //Objeto para editar
   editJaula: Jaula;
@@ -122,16 +121,29 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
     this.loadData()
   }
 
+  //para cerrar las subscripciones
+  ngOnDestroy() {
+    //cancelar suscripciones
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
   loadData() {
 
     let listaPeticionesHttp = [
       this.jaulaService.getJaulas(),
-      this.alimentarService.getLineas()
+      this.alimentarService.getLineas(),
+      this.alimentarService.getSelectoras(),
+      this.alimentarService.getSilos(),
+      this.alimentarService.getDosificadores(),
     ]
 
     forkJoin(listaPeticionesHttp).pipe(takeUntil(this.unsubscribe))
-      .subscribe(([jaulas, lineas]) => {
-
+      .subscribe(([jaulas, lineas, selectoras, silos, dosificadores]) => {
+        this.lineas = lineas
+        this.selectoras = selectoras
+        this.silos = silos
+        this.dosificadores = dosificadores
         jaulas.map(j => j.nombreLinea = this.alimentarService.getNombre(lineas, j.IDLINEA, "NOMBRE"))
 
         this.jaulas = jaulas
@@ -149,12 +161,12 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
 
   openSavePopUp(){
     this.editJaula = undefined
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
   openEditPopUp(data){
     this.editJaula = data;    
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
 

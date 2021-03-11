@@ -60,9 +60,6 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
 
   loadData() {
 
-    console.log("In LoadData");
-    
-
     let listaPeticionesHttp = [
       this.alimentarService.getProgramaciones()
     ]

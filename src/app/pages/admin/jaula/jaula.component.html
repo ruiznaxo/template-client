@@ -4,5 +4,5 @@
 </div>
 
 <ng-template #scrollDataModal let-modal>
-    <app-jaula-popup [modal]="modal" [editObject]="editJaula" (aceptar) = "aceptarPopupClick($event)"></app-jaula-popup>
+    <app-jaula-popup [modal]="modal" [editObject]="editJaula" [lineas]="lineas" [selectoras]="selectoras" [dosificadores]="dosificadores" [silos]="silos" (aceptar)="aceptarPopupClick($event)"></app-jaula-popup>
 </ng-template>
