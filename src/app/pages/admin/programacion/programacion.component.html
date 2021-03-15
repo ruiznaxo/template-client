@@ -7,3 +7,7 @@
 <ng-template #scrollDataModal let-modal>
     <app-programacion-edit [modal]="modal" [editProgramacion]="editProgramacion" (aceptar) = "aceptarPopupClick($event)"></app-programacion-edit>
 </ng-template>
+
+<ng-template #asignarModal let-modal>
+    <app-asignacion [modal]="modal" ></app-asignacion>
+</ng-template>

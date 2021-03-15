@@ -19,6 +19,11 @@ import { NumberPickerModule } from 'ng-number-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
+import {MatListModule} from '@angular/material/list';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
+import { LineaFilterbyProgramacionPipe } from './pipes/linea-filterby-programacion.pipe';
+
 @NgModule({
   declarations: [
     AlimentacionFilterbyJaulaPipe, 
@@ -26,9 +31,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     AlarmaFilterbyLineaPipe, 
     ButtonComponent, 
     PopupComponent, 
-    TableComponent,
+    TableComponent, LineaFilterbyProgramacionPipe,
   ],
   imports: [
+    
     CommonModule,
     UIModule,
     WidgetModule,
@@ -44,7 +50,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     NgbTypeaheadModule,
     NgbCollapseModule,
     NgbDropdownModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    MatListModule,
+    DragDropModule
   ],
   exports:[
     NgxSliderModule,
@@ -67,6 +75,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     UIModule,
     NgxDatatableModule,
     NgbModalModule,
+    MatListModule,
+    DragDropModule,
+    LineaFilterbyProgramacionPipe
+
   ]
 })
 

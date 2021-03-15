@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <h5 class="modal-title mt-0">Asignar Programaciones</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- <mat-selection-list #lineasList [(ngModel)]="selectedLineas">
+                        <mat-list-option *ngFor="let linea of lineas" [value]="linea" [selected]="programacion.ID == linea.IDPROGRAMACION">
+                          {{linea.NOMBRE}}
+                        </mat-list-option>
+                    </mat-selection-list> -->
+                    <div cdkDropListGroup>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="example-container col-12">
+                                    <h2>Sin Asignar</h2>
+
+                                    <div cdkDropList cdkDropListSortingDisabled
+                                        [cdkDropListData]="lineas | lineaFilterbyProgramacion: 0" class="example-list"
+                                        (cdkDropListDropped)="drop($event, 0)">
+                                        <div class="example-box"
+                                            *ngFor="let linea of lineas | lineaFilterbyProgramacion: 0" cdkDrag>
+                                            {{linea.NOMBRE}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="example-container col-4" *ngFor="let progra of programaciones">
+                                    <h2>{{progra.NOMBRE}}</h2>
+
+                                    <div cdkDropList cdkDropListSortingDisabled
+                                        [cdkDropListData]="lineas | lineaFilterbyProgramacion: progra.ID"
+                                        class="example-list" (cdkDropListDropped)="drop($event, progra.ID)">
+                                        <div class="example-box"
+                                            *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID" cdkDrag>
+                                            {{linea.NOMBRE}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- end row -->
+
+</div>
+<div class="modal-footer justify-content-center">
+    <app-button [text]="'Cancelar'" [typeButton]="'btn-secondary'" (clickButton)="modal.close('Close click')">
+    </app-button>
+    <app-button [text]="'Guardar'" [typeButton]="'btn-primary'" (clickButton)="save()"></app-button>
+</div>

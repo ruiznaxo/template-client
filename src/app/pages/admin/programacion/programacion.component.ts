@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { ITable } from '../../../shared/components/table/table';
@@ -17,15 +17,21 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './programacion.component.html',
   styleUrls: ['./programacion.component.scss'],
 })
-export class ProgramacionComponent extends TableCallbackInjectable implements OnInit {
+export class ProgramacionComponent extends TableCallbackInjectable implements OnInit, OnDestroy {
 
   @ViewChild('scrollDataModal') popup: ElementRef;
+  @ViewChild('asignarModal') asignarPopup: ElementRef;
 
   table: ITable = {
     title: "Lista Programaciones",
     actionsColumn: {
       active: true,
       buttons: [
+        // {
+        //   icon: "list-check",
+        //   tooltip: "Asignar a Lineas",
+        //   event: "openAsignarPopUp",
+        // },
         {
           icon: "edit-alt",
           tooltip: "Editar",
@@ -45,6 +51,11 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         event: "openSavePopUp",
         icon: "plus",
         text: "Agregar"
+      },
+      {
+        event: "openAsignarPopUp",
+        icon: "list",
+        text: "Asignar"
       }
     ],
     columns: [
@@ -81,6 +92,7 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   breadCrumbItems: Array<{}>;
 
   editProgramacion: Programacion;
+  asignarProgramacion: Programacion;
 
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
@@ -99,6 +111,11 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
     this.loadData();
   }
 
+  ngOnDestroy(){
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
   loadData() {
 
     let listaPeticionesHttp = [
@@ -111,7 +128,9 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         this.lineas = lineas
 
         programaciones.map(p => p.disableDelete = this.setDisabledField(p))    
-        this.programaciones = programaciones;        
+        this.programaciones = programaciones;   
+        console.log(programaciones);
+             
         this.table.data = this.programaciones
         this.table.auxData = this.programaciones
       });
@@ -126,12 +145,17 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
   openSavePopUp(){
     this.editProgramacion = undefined
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
   }
 
   openEditPopUp(data){
     this.editProgramacion = data;    
-    this.modalService.open(this.popup, { size: 'lg', scrollable: true, centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
+  }
+
+  openAsignarPopUp(data){
+    this.asignarProgramacion = data    
+    this.modalService.open(this.asignarPopup, { size: 'lg', scrollable: true, centered: true,  backdrop: "static" })
   }
 
 
