@@ -197,5 +197,9 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
     this.loadData()  
     this.table.data = cloneDeep(this.table.data);
   }
+  asignarClick(event){
+    this.loadData()  
+    this.table.data = cloneDeep(this.table.data);
+  }
 
 }

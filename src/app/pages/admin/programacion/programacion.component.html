@@ -9,5 +9,5 @@
 </ng-template>
 
 <ng-template #asignarModal let-modal>
-    <app-asignacion [modal]="modal" ></app-asignacion>
+    <app-asignacion [modal]="modal"  (asignar) = "asignarClick($event)"></app-asignacion>
 </ng-template>

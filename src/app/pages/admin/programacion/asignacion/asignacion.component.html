@@ -13,9 +13,9 @@
                     <div cdkDropListGroup>
 
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="example-container col-12">
-                                    <h2>Sin Asignar</h2>
+                                    <h4>Sin Asignar</h4>
 
                                     <div cdkDropList cdkDropListSortingDisabled
                                         [cdkDropListData]="lineas | lineaFilterbyProgramacion: 0" class="example-list"
@@ -26,16 +26,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-8">
-                                <div class="example-container col-4" *ngFor="let progra of programaciones">
-                                    <h2>{{progra.NOMBRE}}</h2>
-
-                                    <div cdkDropList cdkDropListSortingDisabled
-                                        [cdkDropListData]="lineas | lineaFilterbyProgramacion: progra.ID"
-                                        class="example-list" (cdkDropListDropped)="drop($event, progra.ID)">
-                                        <div class="example-box"
-                                            *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID" cdkDrag>
-                                            {{linea.NOMBRE}}</div>
+                            <div class="col-9">
+                                <div class="row">                                    
+                                    <div class="example-container col-3" *ngFor="let progra of programaciones">
+                                        <h4>{{progra.NOMBRE}}</h4>
+    
+                                        <div cdkDropList cdkDropListSortingDisabled
+                                            [cdkDropListData]="lineas | lineaFilterbyProgramacion: progra.ID"
+                                            class="example-list" (cdkDropListDropped)="drop($event, progra.ID)">
+                                            <div class="example-box"
+                                                *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID" cdkDrag>
+                                                {{linea.NOMBRE}}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

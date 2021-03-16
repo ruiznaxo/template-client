@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Linea, Programacion} from 'src/app/pages/alimentar/alimentar';
 import { AlimentarService } from '../../../alimentar/alimentar.service';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ProgramacionService } from '../programacion.service';
 import {
   CdkDragDrop,
   CDK_DRAG_CONFIG,
@@ -36,9 +37,9 @@ const DragConfig = {
 export class AsignacionComponent implements OnInit, OnDestroy {
 
   @Input() modal: any;
-  // @Input() programacion: any;
   lineas: Linea[];
   programaciones: Programacion[];
+  @Output() asignar = new EventEmitter<any>();
 
 
   selectedLineas: Linea[];
@@ -46,7 +47,7 @@ export class AsignacionComponent implements OnInit, OnDestroy {
   //utilizada para cerrar subscripciones
   private unsubscribe = new Subject<void>();
 
-  constructor(public modalService: NgbModal, public alimentarService: AlimentarService) { }
+  constructor(public modalService: NgbModal, public alimentarService: AlimentarService, public programacionService: ProgramacionService) { }
 
   ngOnInit(): void {
 
@@ -72,7 +73,17 @@ export class AsignacionComponent implements OnInit, OnDestroy {
   }
 
   save(){
-    console.log(this.selectedLineas.map(d => d.ID));
+
+    let ids: {idLinea: number, idProgramacion: number}[] = [];
+
+    this.lineas.forEach(linea => {
+      ids.push({idLinea: linea.ID, idProgramacion: linea.IDPROGRAMACION})
+    });
+
+    this.programacionService.updateProgramacionesEnLineas(ids).subscribe(()=> {
+      this.modalService.dismissAll();
+      this.asignar.emit();
+    });
     
     
   }

@@ -31,5 +31,11 @@ export class ProgramacionService {
     return this.http.delete(this.baseUrl + "programacion/" + idProgramacion)
   }
 
+  updateProgramacionesEnLineas(ids){
+    console.log(ids);
+    
+    return this.http.patch(this.baseUrl + "linea/asignarProgramaciones", ids)
+  }
+
 
 }
