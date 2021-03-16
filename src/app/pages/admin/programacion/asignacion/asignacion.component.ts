@@ -24,6 +24,11 @@ const DragConfig = {
   selector: 'app-asignacion',
   templateUrl: './asignacion.component.html',
   styleUrls: ['./asignacion.component.scss'],
+  host: {
+    '[style.display]': '"flex"',
+    '[style.flex-direction]': '"column"',
+    '[style.overflow]': '"hidden"'
+  },
   providers: [{ provide: CDK_DRAG_CONFIG, useValue: DragConfig }]
 })
 
@@ -34,7 +39,7 @@ export class AsignacionComponent implements OnInit, OnDestroy {
   // @Input() programacion: any;
   lineas: Linea[];
   programaciones: Programacion[];
-  
+
 
   selectedLineas: Linea[];
 

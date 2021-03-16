@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'lineaFilterbyProgramacion'
+  name: 'lineaFilterbyProgramacion',
+  pure: false
 })
 export class LineaFilterbyProgramacionPipe implements PipeTransform {
 

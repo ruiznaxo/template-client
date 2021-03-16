@@ -155,7 +155,7 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
   openAsignarPopUp(data){
     this.asignarProgramacion = data    
-    this.modalService.open(this.asignarPopup, { size: 'lg', scrollable: true, centered: true,  backdrop: "static" })
+    this.modalService.open(this.asignarPopup, { size: 'xl', scrollable: true, centered: true,  backdrop: "static" })
   }
 
 

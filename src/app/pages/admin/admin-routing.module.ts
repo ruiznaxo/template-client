@@ -6,6 +6,7 @@ import { UserComponent } from './user/user.component';
 import { JaulaComponent } from './jaula/jaula.component';
 import { SiloComponent } from './silo/silo.component';
 import { DosificadorComponent } from './dosificador/dosificador.component';
+import { AsignacionComponent } from './programacion/asignacion/asignacion.component';
 
 const routes: Routes = [
   { path: 'programacion', component: ProgramacionComponent },
