@@ -5,78 +5,94 @@
 
         <!-- Inicio Header -->
 
-        <div class="row">
-          <div class="col-3 float-left">
-            <form class="app-search d-none d-lg-block">
+        <div class="row mb-2">
+          <div class="col-sm-4">
+            <div class="search-box mr-2 mb-2 d-inline-block">
               <div class="position-relative">
-                <input type="text" class="form-control" placeholder="Buscar..." (keyup)="updateFilter($event)">
-                <span class="bx bx-search-alt"></span>
+                <input type="text" class="form-control" placeholder="Search..." (keyup)="updateFilter($event)">
+                <i class="bx bx-search-alt search-icon"></i>
               </div>
-            </form>
+            </div>
           </div>
-          <div *ngFor="let btn of table.buttons">
-            <form class="app-search d-none d-lg-block" >
-              <div class="position-relative" >
-                <button type="button" class="btn btn-secondary btn-rounded ml-2" (click)="callBackClick($event, btn)">
-                  <i class="bx bx-{{btn.icon}} font-size-16 align-middle mr-2"></i> {{btn.text}}
-                </button>
-              </div>
-            </form>
 
-          </div>
+          <div class="col-sm-8 text-sm-right">
+            <div class="">
+              <button *ngFor="let btn of table.buttons" type="button" class="btn btn-success btn-rounded mb-2 mr-2"
+                (click)="callBackClick($event, btn)"><i class="mdi mdi-{{btn.icon}} mr-1"></i>
+                {{btn.text}}</button>
+            </div>
+          </div><!-- end col-->
         </div>
 
         <!-- Fin Header -->
 
-        <div></div>
+        <!-- Nueva Tabla -->
 
-        <!-- Inicio Tabla -->
+        <div class="table-responsive mb-0">
+          <table class="table table-centered table-nowrap table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th *ngFor="let column of table.columns">{{ column.name }}</th>
+                <th *ngIf="table.actionsColumn.active">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of table.data">
+                <td *ngFor="let column of table.columns">
 
-        <ngx-datatable class="dark" [rows]="table.data" [columns]="table.columns" [columnMode]="'force'">
-          <ngx-datatable-column *ngFor="let col of table.columns" [name]="col.name" [prop]="col.prop" [sortable]="col.sort ? col.sort : false">
-            <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-              <span *ngIf="col.type == 'decimal'">
-                {{ value | number:'1.0-0':'es' }}
-              </span>
-              <span *ngIf="col.type == 'text'">
-                <div *ngIf="col.showedName; then thenBlock else elseBlock;"></div>
-                <ng-template #thenBlock>{{ getShowedName(row, col.showedName) }}</ng-template>
-                <ng-template #elseBlock>{{ value }}</ng-template> 
-              </span>
-              <span *ngIf="col.type == 'checkbox'">
-                <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-success mb-3">
-                  <input type="checkbox" class="custom-control-input" id="customCheck-outlinecolor2" [checked]="value" readonly disabled>
-                  <label class="custom-control-label" for="customCheck-outlinecolor2"></label>
-                </div>
-              </span>
-              
-            </ng-template>
-          </ngx-datatable-column>
+                  <a class="text-body font-weight-bold" *ngIf="column.type == 'decimal'">
+                    {{ data[column.prop] | number:'1.0-0':'es' }}
+                  </a>
 
-          <!-- Inicio Columna de Acciones -->
-          <ngx-datatable-column name="Actions" sortable="false" draggable="false" prop="id" *ngIf="table.actionsColumn.active">
-            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <a class="text-body font-weight-bold" *ngIf="column.type == 'text'">
+                    <div *ngIf="column.showedName; then thenBlock else elseBlock;"></div>
+                    <ng-template #thenBlock>{{ getShowedName(data, column.showedName) }}</ng-template>
+                    <ng-template #elseBlock>{{ data[column.prop] }}</ng-template>
+                  </a>
 
-              <ul class="list-inline font-size-16 contact-links mb-0">
-                <li class="list-inline-item px-2" *ngFor="let button of table.actionsColumn.buttons">
-                  <!-- <div [ngbTooltip]="row.disableDelete ? button.disabledTooltip : button.tooltip"> -->
-                  <div [ngbTooltip]="test(row, button)">
-                    <button type="button" class="btn"
-                      (click)="callBackClick($event, button, row)" [class.disabled]="disable(row, button)" [disabled]="disable(row, button)"><i
-                        class="font-size-16 bx bx-{{button.icon}}"></i></button>
-                  </div>
-                </li>
-              </ul>
-            </ng-template>            
-          </ngx-datatable-column>
-          <!-- Fin Columna de Acciones -->
+                  <a class="text-body font-weight-bold" *ngIf="column.type == 'checkbox'">
+                    <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-success mb-3">
+                      <input type="checkbox" class="custom-control-input" id="customCheck-outlinecolor2" [checked]="data[column.prop]"
+                        readonly disabled>
+                      <label class="custom-control-label" for="customCheck-outlinecolor2"></label>
+                    </div>
+                  </a>
 
-        </ngx-datatable>
+                </td>
 
-        <!-- Fin Tabla -->
+                <td *ngIf="table.actionsColumn.active">
+                  <ul class="list-inline font-size-16 contact-links mb-0">
+                    <li class="list-inline-item px-2" *ngFor="let button of table.actionsColumn.buttons">
+                      <!-- <div [ngbTooltip]="row.disableDelete ? button.disabledTooltip : button.tooltip"> -->
+                      <div [ngbTooltip]="test(data, button)">
+                        <button type="button" class="btn" (click)="callBackClick($event, button, data)"
+                          [class.disabled]="disable(data, button)" [disabled]="disable(data, button)"><i
+                            class="font-size-16 bx bx-{{button.icon}}"></i></button>
+                      </div>
+                    </li>
+                  </ul>
+                </td>
+                <!-- <td>
+                  <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.id}}</a>
+                </td>
+                <td>{{data.name}}</td>
+                <td>{{data.date}}</td>
+                <td>{{data.total}}</td>
+                <td>
+                  <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'Chargeback',
+                                'badge-soft-warning':data.status === 'Refund' }">{{data.status}}</span>
+                </td>
+                <td>
+                  <i :class="`fab ${data.payment[0]} mr-1`"></i>
+                  {{data.payment[1]}}
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
 
       </div>
     </div>
   </div>
 </div>
-

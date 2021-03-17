@@ -58,13 +58,13 @@ export class JaulaComponent extends TableCallbackInjectable implements OnInit {
       {
         name: "Cantidad Peces",
         prop: "CANTIDADPECES",
-        type: "text",
+        type: "decimal",
         sort: true
       },
       {
         name: "Peso Promedio",
         prop: "PESOPROMEDIO",
-        type: "text",
+        type: "decimal",
         sort: true
       },
       {

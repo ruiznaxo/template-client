@@ -76,9 +76,8 @@ export class AlimentarService {
     return this.http.patch(this.baseUrl + "jaula/habilitada/" + idJaula, {habilitada: valor})
   }
 
-
   getNombre(object: any[], id, property: string){
-    return object.find(o => o.ID === id)[property]
+    return id ? object.find(o => o.ID === id)[property] : "Sin Asignar";    
   }
 
 }

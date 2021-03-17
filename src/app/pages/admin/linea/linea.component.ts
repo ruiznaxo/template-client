@@ -115,10 +115,13 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit, O
         this.jaulas = jaulas;
         this.programaciones = programaciones
 
+        console.log(lineas.map(a => a.IDPROGRAMACION));
+        console.log(programaciones)
         lineas.map(l => l.disableDelete = this.setDisabledField(l))
         lineas.map(l => l.nombreProgramacion = this.alimentarService.getNombre(programaciones, l.IDPROGRAMACION, "NOMBRE"))
         this.lineas = lineas;
 
+        
         this.table.data = this.lineas;
         this.table.auxData = this.lineas;
       });

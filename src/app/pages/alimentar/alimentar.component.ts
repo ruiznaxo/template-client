@@ -357,7 +357,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
   }
 
   getNombreProgramacion(idTProgrmacion) {
-    return this.programaciones.find(tipo => tipo.ID === idTProgrmacion).NOMBRE
+    return idTProgrmacion ? this.programaciones.find(tipo => tipo.ID === idTProgrmacion).NOMBRE : "Sin Asignar"
   }
 
   setEstadoLinea(idLinea: number, estado: number) {
