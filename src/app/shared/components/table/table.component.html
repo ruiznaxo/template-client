@@ -52,8 +52,8 @@
 
                   <a class="text-body font-weight-bold" *ngIf="column.type == 'checkbox'">
                     <div class="custom-control custom-checkbox custom-checkbox-outline custom-checkbox-success mb-3">
-                      <input type="checkbox" class="custom-control-input" id="customCheck-outlinecolor2" [checked]="data[column.prop]"
-                        readonly disabled>
+                      <input type="checkbox" class="custom-control-input" id="customCheck-outlinecolor2"
+                        [checked]="data[column.prop]" readonly disabled>
                       <label class="custom-control-label" for="customCheck-outlinecolor2"></label>
                     </div>
                   </a>
@@ -73,19 +73,19 @@
                   </ul>
                 </td>
                 <!-- <td>
-                  <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.id}}</a>
-                </td>
-                <td>{{data.name}}</td>
-                <td>{{data.date}}</td>
-                <td>{{data.total}}</td>
-                <td>
-                  <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'Chargeback',
-                                'badge-soft-warning':data.status === 'Refund' }">{{data.status}}</span>
-                </td>
-                <td>
-                  <i :class="`fab ${data.payment[0]} mr-1`"></i>
-                  {{data.payment[1]}}
-                </td> -->
+                    <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.id}}</a>
+                  </td>
+                  <td>{{data.name}}</td>
+                  <td>{{data.date}}</td>
+                  <td>{{data.total}}</td>
+                  <td>
+                    <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'Chargeback',
+                                  'badge-soft-warning':data.status === 'Refund' }">{{data.status}}</span>
+                  </td>
+                  <td>
+                    <i :class="`fab ${data.payment[0]} mr-1`"></i>
+                    {{data.payment[1]}}
+                  </td> -->
               </tr>
             </tbody>
           </table>

@@ -208,7 +208,7 @@ export class AlimentarComponent implements OnInit, OnDestroy {
     let dosificadores = this.dosificadores.filter(doser => doser.IDLINEA === this.jaulaPopUp.IDLINEA).map(a => a.ID);
     this.silosPopUp = this.silos.filter((({ ID }) => dosificadores.includes(ID)));
 
-    this.modalService.open(scrollDataModal, { size: 'lg', scrollable: true, centered: true });
+    this.modalService.open(scrollDataModal, { size: 'lg', scrollable: true, centered: true, backdrop: "static" });
 
   }
 

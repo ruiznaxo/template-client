@@ -30,7 +30,7 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
 
     this.lineaForm = new FormGroup({
       nombre: new FormControl(),
-      idProgramacion: new FormControl()
+      // idProgramacion: new FormControl()
     });
 
   }
@@ -44,7 +44,7 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.lineaForm = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.maxLength(30)]],
-      idProgramacion: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(3)]],
+      // idProgramacion: ['', [Validators.pattern('^[0-9]*$'), Validators.required, Validators.maxLength(3)]],
     });
 
     this.loadData();
@@ -52,7 +52,7 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
     if (this.editObject) {
 
       this.lineaForm.controls['nombre'].setValue(this.editObject.NOMBRE);
-      this.lineaForm.controls['idProgramacion'].setValue(this.editObject.IDPROGRAMACION);
+      // this.lineaForm.controls['idProgramacion'].setValue(this.editObject.IDPROGRAMACION);
 
     }
 
@@ -74,7 +74,7 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
   save() {
     let linea = {
       nombre: this.lineaForm.value.nombre,
-      idProgramacion: this.lineaForm.value.idProgramacion
+      // idProgramacion: this.lineaForm.value.idProgramacion
     }
 
     this.lineaServ.addLinea(linea).subscribe(() => {
@@ -88,7 +88,7 @@ export class LineaPopupComponent implements OnInit, OnDestroy {
     let linea = {
       id: this.editObject.ID,
       nombre: this.lineaForm.value.nombre,
-      idProgramacion: this.lineaForm.value.idProgramacion
+      // idProgramacion: this.lineaForm.value.idProgramacion
     }
 
     this.lineaServ.updateLinea(linea.id, linea).subscribe(() => {

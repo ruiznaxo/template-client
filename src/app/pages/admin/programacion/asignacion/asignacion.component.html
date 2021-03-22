@@ -1,4 +1,71 @@
-<div class="modal-header">
+<div class="row ">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-body ">
+                <h4 class="card-title mb-2">Asignación de Programaciones</h4>
+
+                <perfect-scrollbar style="position: relative; height: 450px;">
+                
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+    
+                                    <div cdkDropListGroup>
+    
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="example-container col-12">
+                                                    <h5>Sin Asignar</h5>
+    
+                                                    <div cdkDropList cdkDropListSortingDisabled
+                                                        [cdkDropListData]="lineas | lineaFilterbyProgramacion: 0"
+                                                        class="example-list" (cdkDropListDropped)="drop($event, 0)">
+                                                        <div class="example-box"
+                                                            *ngFor="let linea of lineas | lineaFilterbyProgramacion: 0"
+                                                            cdkDrag>
+                                                            {{linea.NOMBRE}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-9">
+                                                <div class="row">
+                                                    <div class="example-container col-4"
+                                                        *ngFor="let progra of programaciones">
+                                                        <h5>{{progra.NOMBRE}}</h5>
+    
+                                                        <div cdkDropList cdkDropListSortingDisabled
+                                                            [cdkDropListData]="lineas | lineaFilterbyProgramacion: progra.ID"
+                                                            class="example-list"
+                                                            (cdkDropListDropped)="drop($event, progra.ID)">
+                                                            <div class="example-box"
+                                                                *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID"
+                                                                cdkDrag>
+                                                                {{linea.NOMBRE}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </perfect-scrollbar>
+            </div>
+            <div class="card-footer text-muted justify-content-center">
+                <app-button [text]="'Guardar'" [typeButton]="'btn-primary'" (clickButton)="save()"></app-button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- <div class="modal-header">
     <h5 class="modal-title mt-0">Asignar Programaciones</h5>
     <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -15,7 +82,7 @@
                         <div class="row">
                             <div class="col-3">
                                 <div class="example-container col-12">
-                                    <h4>Sin Asignar</h4>
+                                    <h5>Sin Asignar</h5>
 
                                     <div cdkDropList cdkDropListSortingDisabled
                                         [cdkDropListData]="lineas | lineaFilterbyProgramacion: 0" class="example-list"
@@ -27,15 +94,16 @@
                                 </div>
                             </div>
                             <div class="col-9">
-                                <div class="row">                                    
+                                <div class="row">
                                     <div class="example-container col-3" *ngFor="let progra of programaciones">
-                                        <h4>{{progra.NOMBRE}}</h4>
-    
+                                        <h5>{{progra.NOMBRE}}</h5>
+
                                         <div cdkDropList cdkDropListSortingDisabled
                                             [cdkDropListData]="lineas | lineaFilterbyProgramacion: progra.ID"
                                             class="example-list" (cdkDropListDropped)="drop($event, progra.ID)">
                                             <div class="example-box"
-                                                *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID" cdkDrag>
+                                                *ngFor="let linea of lineas | lineaFilterbyProgramacion: progra.ID"
+                                                cdkDrag>
                                                 {{linea.NOMBRE}}</div>
                                         </div>
                                     </div>
@@ -48,12 +116,11 @@
         </div>
     </div>
 
-</div>
+</div> -->
 <!-- end row -->
-
+<!-- 
 <div class="modal-footer justify-content-center">
     <app-button [text]="'Cancelar'" [typeButton]="'btn-secondary'" (clickButton)="modal.close('Close click')">
     </app-button>
     <app-button [text]="'Guardar'" [typeButton]="'btn-primary'" (clickButton)="save()"></app-button>
-</div>
-
+</div> -->

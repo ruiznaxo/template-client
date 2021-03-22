@@ -136,12 +136,12 @@ export class LineaComponent extends TableCallbackInjectable implements OnInit, O
 
   openSavePopUp() {
     this.editLinea = undefined
-    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'sm', centered: true, backdrop: "static" })
   }
 
   openEditPopUp(data) {
     this.editLinea = data;
-    this.modalService.open(this.popup, { size: 'lg', centered: true, backdrop: "static" })
+    this.modalService.open(this.popup, { size: 'sm', centered: true, backdrop: "static" })
   }
 
 

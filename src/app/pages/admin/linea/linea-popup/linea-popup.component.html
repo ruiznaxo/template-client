@@ -12,22 +12,21 @@
                     <form [formGroup]="lineaForm">
                         <div class="row">
                             <!-- Nombre -->
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Nombre: </label>
                                     <input type="text" class="form-control" min="0" formControlName="nombre">
                                 </div>
                             </div>
                             <!-- Horas -->
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Programación: </label>
-                                    <!-- <input type="number" class="form-control" min="0" formControlName="idProgramacion"> -->
                                     <ng-select [items]="programaciones" bindLabel="NOMBRE" bindValue="ID"
                                             formControlName="idProgramacion" [clearable]="false">
                                         </ng-select>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>                        
                     </form>
                 </div>

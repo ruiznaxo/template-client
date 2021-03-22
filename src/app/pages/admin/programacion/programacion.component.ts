@@ -8,7 +8,6 @@ import { TableCallbackInjectable } from '../../../shared/components/table/table-
 import { cloneDeep } from 'lodash';
 
 import Swal from 'sweetalert2';
-import { ProgramacionEditComponent } from './programacion-edit/programacion-edit.component';
 import { AlimentarService } from '../../alimentar/alimentar.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -21,6 +20,8 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
   @ViewChild('scrollDataModal') popup: ElementRef;
   @ViewChild('asignarModal') asignarPopup: ElementRef;
+
+  eventsSubject: Subject<void> = new Subject<void>();
 
   table: ITable = {
     title: "Lista Programaciones",
@@ -51,11 +52,6 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
         event: "openSavePopUp",
         icon: "plus",
         text: "Agregar"
-      },
-      {
-        event: "openAsignarPopUp",
-        icon: "list",
-        text: "Asignar"
       }
     ],
     columns: [
@@ -129,7 +125,6 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
 
         programaciones.map(p => p.disableDelete = this.setDisabledField(p))    
         this.programaciones = programaciones;   
-        console.log(programaciones);
              
         this.table.data = this.programaciones
         this.table.auxData = this.programaciones
@@ -181,6 +176,7 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
           });
           this.programaciones = this.programaciones.filter(p => p.ID !== programacion.ID);
           this.table.data.splice(f, 1);
+          this.eventsSubject.next();
           this.table.data = cloneDeep(this.table.data);
           Swal.fire('¡Borrado!', `Programación ${programacion.NOMBRE} eliminada`, 'success');
 
@@ -195,6 +191,7 @@ export class ProgramacionComponent extends TableCallbackInjectable implements On
   
   aceptarPopupClick(event){
     this.loadData()  
+    this.eventsSubject.next();
     this.table.data = cloneDeep(this.table.data);
   }
   asignarClick(event){

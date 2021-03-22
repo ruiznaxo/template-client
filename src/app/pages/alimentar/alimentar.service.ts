@@ -65,7 +65,7 @@ export class AlimentarService {
   }
 
   updateEstadoLinea(idLinea: number, estado: number){
-    return this.http.patch(this.baseUrl + "linea/estado" + idLinea, {estado: estado})
+    return this.http.patch(this.baseUrl + "linea/estado/" + idLinea, {estado: estado})
   }
 
   updateHzPausa(idLinea: number, hzPausa: number){

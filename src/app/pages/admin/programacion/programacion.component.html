@@ -1,6 +1,13 @@
 <div class="container-fluid">
     <app-page-title title="Programación" [breadcrumbItems]="breadCrumbItems"></app-page-title>
-    <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
+    <div class="row">
+        <div class="col-sm-6">
+            <app-table [table]="table" (clickButton) = "callBack($event)"></app-table>
+        </div>
+        <div class="col-sm-6">
+            <app-asignacion [events]="eventsSubject.asObservable()" (asignar) = "asignarClick($event)"></app-asignacion>
+        </div>
+    </div>
 </div>
 
 
