@@ -121,6 +121,11 @@ export class DosificadorComponent extends TableCallbackInjectable implements OnI
     this.breadCrumbItems = [{ label: 'Admin' }, { label: 'Dosificadors', active: true }];
 
     this.loadData()
+  } 
+
+  ngOnDestroy(){
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   loadData() {

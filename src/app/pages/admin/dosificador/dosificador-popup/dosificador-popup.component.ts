@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Dosificador, Linea, Silo } from '../../../alimentar/alimentar';
@@ -9,7 +9,7 @@ import { DosificadorService } from '../dosificador.service';
   templateUrl: './dosificador-popup.component.html',
   styleUrls: ['./dosificador-popup.component.scss']
 })
-export class DosificadorPopupComponent implements OnInit {
+export class DosificadorPopupComponent implements OnInit, OnDestroy {
 
   @Input() modal: any;
   @Input() editObject: Dosificador;
